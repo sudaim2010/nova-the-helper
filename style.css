@@ -85,3 +85,29 @@ h1 {
 #send-button:hover {
     background-color: #7c3aed;
 }
+
+#typing-indicator {
+    opacity: 0.7;
+    font-style: italic;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0% { opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { opacity: 0.3; }
+}
+
+.timestamp {
+    font-size: 0.7rem;
+    color: #888;
+    margin-top: 4px;
+    align-self: flex-end;
+}
+
+.nova-timestamp {
+    font-size: 0.7rem;
+    color: #888;
+    margin-top: 4px;
+    align-self: flex-start;
+}
