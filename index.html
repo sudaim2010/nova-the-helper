@@ -1,27 +1,275 @@
 <!DOCTYPE html>
-<html lang="en" id="html-root">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nova AI</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>NOVA v4.0 — Personal AI Assistant of Muhammad Sudaim</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&family=Exo+2:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <div id="top-bar">
-        <h1>✨ Nova AI</h1>
-        <button id="theme-toggle">🌙 Dark Mode</button>
+<div id="hbg"></div>
+<canvas id="ptc"></canvas>
+<div id="notif"></div>
+<div id="boot">
+  <div id="boot-ring"><div id="boot-txt">NOVA</div></div>
+  <div id="boot-track"><div id="boot-fill"></div></div>
+  <div id="boot-log">INITIALIZING...</div>
+  <div style="font-family:var(--fm);font-size:9px;letter-spacing:3px;color:var(--t3)">PERSONAL AI v4.0 &middot; MUHAMMAD SUDAIM</div>
+</div>
+<div id="app">
+<header id="hdr">
+  <div style="display:flex;align-items:center;gap:18px">
+    <div><div id="logo">N O V A</div><div id="logo-sub">PERSONAL INTELLIGENCE SYSTEM &middot; CREATED BY MUHAMMAD SUDAIM</div></div>
+    <div class="hst"><div class="hst-l">UPTIME</div><div class="hst-v" id="hupt">00:00</div></div>
+    <div class="hst"><div class="hst-l">XP</div><div class="hst-v" id="hxp">0</div></div>
+    <div class="hst"><div class="hst-l">LEVEL</div><div class="hst-v" id="hlv">1</div></div>
+    <div class="hst"><div class="hst-l">STREAK</div><div class="hst-v" id="hstr">0&#x1F525;</div></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <button class="hbtn" onclick="openM('sm')">&#9881; SETTINGS</button>
+    <button class="hbtn" onclick="openM('em')">&#127908; ENROLL VOICE</button>
+    <button class="hbtn gold" onclick="expChat()">&#8595; EXPORT</button>
+  </div>
+</header>
+<aside id="left">
+  <div id="orb-wrap">
+    <div id="orb" onclick="toggleListen()"><div id="orb-in"><div id="orb-face">&#x1F642;</div></div></div>
+    <div id="orb-nm">N O V A</div>
+    <div id="orb-cr">CREATED BY MUHAMMAD SUDAIM</div>
+  </div>
+  <div id="xp-w">
+    <div id="xp-row"><span id="xp-lv">LVL 1 &mdash; ROOKIE</span><span id="xp-pt">0/100 XP</span></div>
+    <div id="xp-tr"><div id="xp-b" style="width:0%"></div></div>
+  </div>
+  <div class="ps"><div class="ps-t">NOVA'S MOOD</div>
+    <div id="mood-row"><span id="mood-e">&#x1F60A;</span><span id="mood-n" style="color:var(--cg)">HAPPY</span><div id="mood-tr"><div id="mood-f" style="width:70%;background:var(--cg)"></div></div></div>
+    <div id="mood-txt">Feeling great and ready to help!</div>
+  </div>
+  <div class="ps"><div class="ps-t">SESSION STATS</div>
+    <div class="str"><span class="stk">MESSAGES</span><span class="stv" id="smsg">0</span></div>
+    <div class="str"><span class="stk">QUESTIONS</span><span class="stv" id="sq">0</span></div>
+    <div class="str"><span class="stk">TOPICS</span><span class="stv" id="stop">0</span></div>
+    <div class="str"><span class="stk">QUIZ BEST</span><span class="stv" id="squiz">&mdash;</span></div>
+    <div class="str"><span class="stk">WAKE TRIGGERS</span><span class="stv" id="swake">0</span></div>
+    <div class="str"><span class="stk">RESP TIME</span><span class="stv" id="sresp">&mdash;</span></div>
+  </div>
+  <div class="ps"><div class="ps-t">WAKE WORD SYSTEM</div>
+    <div id="wake-box"><div id="wdot"></div><div id="wtxt">Inactive &mdash; press START</div></div>
+    <div class="wbtns"><button class="wbtn" id="ws" onclick="startWake()">&#9654; START</button><button class="wbtn" id="wst" onclick="stopWake()">&#9632; STOP</button></div>
+    <input id="wpi" type="text" value="hi nova" placeholder="Custom wake phrase&hellip;"/>
+  </div>
+  <div class="ps"><div class="ps-t">ACHIEVEMENTS</div>
+    <div id="ach-g">
+      <div class="ach off" id="ach-first"><span>&#x1F4AC;</span><div class="atip">First Chat</div></div>
+      <div class="ach off" id="ach-q10"><span>&#x1F51F;</span><div class="atip">10 Questions</div></div>
+      <div class="ach off" id="ach-q50"><span>&#x1F3C5;</span><div class="atip">50 Questions</div></div>
+      <div class="ach off" id="ach-quiz"><span>&#x1F9E0;</span><div class="atip">Quiz Master</div></div>
+      <div class="ach off" id="ach-night"><span>&#x1F989;</span><div class="atip">Night Owl</div></div>
+      <div class="ach off" id="ach-wake"><span>&#x1F3A4;</span><div class="atip">Voice Wake</div></div>
+      <div class="ach off" id="ach-str3"><span>&#x1F525;</span><div class="atip">3-Day Streak</div></div>
+      <div class="ach off" id="ach-enc"><span>&#x1F4DA;</span><div class="atip">Encyclopedia</div></div>
+      <div class="ach off" id="ach-note"><span>&#x1F4DD;</span><div class="atip">Note Taker</div></div>
+      <div class="ach off" id="ach-mot"><span>&#x1F680;</span><div class="atip">Motivated</div></div>
     </div>
-
-    <div id="chat-area">
-        <div class="nova-message">Hello! I am Nova, your AI assistant. How can I help you?</div>
+  </div>
+  <div class="ps"><div class="ps-t">QUICK TOPICS</div>
+    <div id="qtags">
+      <span class="qt" onclick="fi('What is gravity')">Gravity</span>
+      <span class="qt" onclick="fi('What is DNA')">DNA</span>
+      <span class="qt" onclick="fi('Black holes')">Black Holes</span>
+      <span class="qt" onclick="fi('Speed of light')">Light Speed</span>
+      <span class="qt" onclick="fi('What is Islam')">Islam</span>
+      <span class="qt" onclick="fi('Tell me about Pakistan')">Pakistan</span>
+      <span class="qt" onclick="fi('What is AI')">AI</span>
+      <span class="qt" onclick="fi('Solar system')">Solar System</span>
+      <span class="qt" onclick="fi('Pythagorean theorem')">Pythagoras</span>
+      <span class="qt" onclick="fi('Human body systems')">Human Body</span>
+      <span class="qt" onclick="fi('Evolution darwin')">Evolution</span>
+      <span class="qt" onclick="fi('Tell me about the Quran')">Quran</span>
+      <span class="qt" onclick="fi('Islamic golden age')">Islamic Golden Age</span>
+      <span class="qt" onclick="fi('Quantum physics')">Quantum</span>
+      <span class="qt" onclick="fi('K2 mountain')">K2</span>
+      <span class="qt" onclick="fi('Climate change')">Climate</span>
+      <span class="qt" onclick="fi('Periodic table')">Chemistry</span>
+      <span class="qt" onclick="fi('Blockchain bitcoin')">Blockchain</span>
+      <span class="qt" onclick="fi('Big bang theory')">Big Bang</span>
+      <span class="qt" onclick="fi('Human brain neuroscience')">Brain</span>
     </div>
-
-    <div id="input-area">
-        <input type="text" id="message-input" placeholder="Type your message here...">
-        <button id="send-button">Send ➤</button>
+  </div>
+</aside>
+<main id="center">
+  <div id="tabs">
+    <div class="tab on" onclick="sTab('chat')">&#x1F4AC; CHAT</div>
+    <div class="tab" onclick="sTab('quiz')">&#x1F9E0; QUIZ</div>
+    <div class="tab" onclick="sTab('encyclopedia')">&#x1F4DA; ENCYCLOPEDIA</div>
+    <div class="tab" onclick="sTab('games')">&#x1F3AE; GAMES</div>
+    <div class="tab" onclick="sTab('notes')">&#x1F4DD; NOTES</div>
+    <div class="tab" onclick="sTab('lifestyle')">&#x1F319; LIFESTYLE</div>
+  </div>
+  <div id="mcont">
+    <div class="view on" id="tab-chat" style="padding:0;gap:0">
+      <div id="chat-log"></div>
+      <div id="izone">
+        <canvas id="wc"></canvas>
+        <div id="irow">
+          <div id="slbl">READY &mdash; TAP MIC OR TYPE</div>
+          <div id="mbt" onclick="toggleListen()">&#x1F3A4;</div>
+          <input id="tinp" type="text" placeholder="Ask NOVA anything&hellip;" onkeydown="if(event.key==='Enter')sTxt()"/>
+          <button id="sbtn" onclick="sTxt()">TRANSMIT</button>
+        </div>
+      </div>
     </div>
-
-    <script src="script.js"></script>
+    <div class="view" id="tab-quiz">
+      <div class="vh">KNOWLEDGE QUIZ</div>
+      <div class="vsub">TEST YOUR KNOWLEDGE &mdash; EARN XP FOR CORRECT ANSWERS</div>
+      <div class="qsbar">
+        <div class="qs"><div class="qsl">SCORE</div><div class="qsv" id="qsc">0</div></div>
+        <div class="qs"><div class="qsl">CORRECT</div><div class="qsv" id="qco">0</div></div>
+        <div class="qs"><div class="qsl">STREAK</div><div class="qsv" id="qst">0&#x1F525;</div></div>
+        <div class="qs" style="margin-left:auto"><div class="qsl">CATEGORY</div>
+          <select id="qcat"><option value="all">All</option><option value="science">Science</option><option value="space">Space</option><option value="math">Math</option><option value="tech">Tech</option><option value="history">History</option><option value="islam">Islam</option><option value="pakistan">Pakistan</option><option value="health">Health</option><option value="geo">Geography</option></select>
+        </div>
+      </div>
+      <div id="quiz-q">Press NEXT QUESTION to begin!</div>
+      <div id="quiz-opts"></div>
+      <button id="qnxt" onclick="nextQ()">&#9654; NEXT QUESTION</button>
+    </div>
+    <div class="view" id="tab-encyclopedia">
+      <div class="vh">ENCYCLOPEDIA</div>
+      <div class="vsub">300+ OFFLINE ARTICLES &mdash; ALL MAJOR SUBJECTS &mdash; NO INTERNET NEEDED</div>
+      <input id="einp" type="text" placeholder="Search any topic&hellip;" oninput="encS(this.value)" onkeydown="if(event.key==='Enter')encS(this.value,1)"/>
+      <div id="eres"><div id="eres-t"></div><div id="eres-b"></div></div>
+      <div id="ecats"></div>
+    </div>
+    <div class="view" id="tab-games">
+      <div class="vh">GAMES &amp; FUN</div>
+      <div class="vsub">INTERACTIVE GAMES &mdash; VOICE ENABLED</div>
+      <div class="ggrid">
+        <div class="gc" onclick="startG('riddle')"><div class="gt">&#x1F3AF; RIDDLE ME</div><div class="gd">Voice riddles &mdash; test your mind</div></div>
+        <div class="gc" onclick="startG('wyr')"><div class="gt">&#x1F914; WOULD YOU RATHER</div><div class="gd">Tough choices, fun discussions</div></div>
+        <div class="gc" onclick="startG('t2l')"><div class="gt">&#x1F575;&#xFE0F; 2 TRUTHS 1 LIE</div><div class="gd">Guess which statement is false</div></div>
+        <div class="gc" onclick="startG('tongue')"><div class="gt">&#x1F445; TONGUE TWISTERS</div><div class="gd">Say them fast if you can!</div></div>
+        <div class="gc" onclick="startG('story')"><div class="gt">&#x1F4D6; STORY BUILDER</div><div class="gd">Build a story together</div></div>
+        <div class="gc" onclick="startG('rap')"><div class="gt">&#x1F3B5; NOVA RAPS</div><div class="gd">NOVA writes a rap for you</div></div>
+        <div class="gc" onclick="startG('kk')"><div class="gt">&#x1F602; KNOCK KNOCK</div><div class="gd">Interactive knock-knock jokes</div></div>
+        <div class="gc" onclick="startG('blitz')"><div class="gt">&#x26A1; 60s TRIVIA BLITZ</div><div class="gd">As many answers as you can</div></div>
+      </div>
+      <div id="game-area"><div id="gcnt"></div></div>
+    </div>
+    <div class="view" id="tab-notes">
+      <div class="vh">NOTES</div>
+      <div class="vsub">SAVE ANYTHING &mdash; STORED ON YOUR DEVICE</div>
+      <textarea id="nta" placeholder="Type a note&hellip;"></textarea>
+      <div class="flex-r">
+        <button class="btn bh" onclick="saveNote()">+ SAVE NOTE</button>
+        <button class="btn bg" onclick="expNotes()">&#8595; EXPORT</button>
+        <button class="btn br" onclick="clearNotes()">&#x1F5D1; CLEAR ALL</button>
+      </div>
+      <div id="nlist"></div>
+    </div>
+    <div class="view" id="tab-lifestyle">
+      <div class="vh">LIFESTYLE &amp; WELLNESS</div>
+      <div class="vsub">PRAYER TIMES &middot; HABITS &middot; WELLNESS &middot; BREATHING</div>
+      <div class="lc"><div class="lt">&#x1F54C; PRAYER TIMES &mdash; KARACHI</div><div id="plist"></div></div>
+      <div class="lc"><div class="lt">&#x1F4C5; CALENDAR</div>
+        <div class="lr"><span class="lk">Hijri Date</span><span class="lv" id="hijri-ls">&mdash;</span></div>
+        <div class="lr"><span class="lk">Birthday Countdown</span><span class="lv" id="bday-ls">&mdash;</span></div>
+      </div>
+      <div class="lc"><div class="lt">&#x1F4A7; WELLNESS TRACKER</div>
+        <div class="lr"><span class="lk">Water (glasses)</span><span><button class="tbm m" onclick="trk('water',-1)">&#8722;</button><span class="tv" id="t-water">0</span><button class="tbm p" onclick="trk('water',1)">+</button></span></div>
+        <div class="lr"><span class="lk">Exercise (min)</span><span><button class="tbm m" onclick="trk('exercise',-5)">&#8722;</button><span class="tv" id="t-exercise">0</span><button class="tbm p" onclick="trk('exercise',5)">+</button></span></div>
+        <div class="lr"><span class="lk">Reading (min)</span><span><button class="tbm m" onclick="trk('reading',-5)">&#8722;</button><span class="tv" id="t-reading">0</span><button class="tbm p" onclick="trk('reading',5)">+</button></span></div>
+        <div class="lr"><span class="lk">Sleep (hrs)</span><span><button class="tbm m" onclick="trk('sleep',-.5)">&#8722;</button><span class="tv" id="t-sleep">7</span><button class="tbm p" onclick="trk('sleep',.5)">+</button></span></div>
+      </div>
+      <div class="lc"><div class="lt">&#x1F3AF; DAILY GOALS</div>
+        <div id="glist"></div>
+        <div class="flex-r" style="margin-top:6px"><input id="ginp" type="text" placeholder="Add a goal&hellip;" onkeydown="if(event.key==='Enter')addGoal()"/><button class="btn bh" onclick="addGoal()" style="padding:6px 12px">+</button></div>
+      </div>
+      <div class="lc"><div class="lt">&#x1F32C;&#xFE0F; 4-7-8 BREATHING</div>
+        <div style="text-align:center;padding:8px"><div id="borb">READY</div><button class="btn bh" onclick="startBreath()">START BREATHING</button></div>
+      </div>
+    </div>
+  </div>
+</main>
+<aside id="right">
+  <div class="ps" style="text-align:center">
+    <div id="bclock">00:00:00</div><div id="bdate">&mdash;</div><div id="hijri">&mdash;</div><div id="btag">&#x1F382; BIRTHDAY IN &mdash; DAYS</div>
+  </div>
+  <div class="ps"><div id="dfl">&#9658; FACT OF THE DAY</div><div id="dft">Loading&hellip;</div></div>
+  <div class="ps"><div class="ps-t">QUOTE OF THE DAY</div><div id="qt">&mdash;</div><div id="qa">&mdash;</div></div>
+  <div class="ps"><div class="ps-t">WORD OF THE DAY</div><div id="vw">&mdash;</div><div id="vtype">&mdash;</div><div id="vdef">&mdash;</div><div id="vex">&mdash;</div></div>
+  <div class="ps"><div class="ps-t">STREAKS</div>
+    <div class="si"><span class="sic">&#x1F525;</span><div class="sinf"><div class="snm">Daily Streak</div><div class="sds">Talk to NOVA every day</div></div><span class="scnt" id="str-d">0</span></div>
+    <div class="si"><span class="sic">&#x1F4A7;</span><div class="sinf"><div class="snm">Hydration</div><div class="sds">8 glasses today</div></div><span class="scnt" id="str-w" style="color:var(--c)">0/8</span></div>
+    <div class="si"><span class="sic">&#x1F4DA;</span><div class="sinf"><div class="snm">Learning</div><div class="sds">Questions today</div></div><span class="scnt" id="str-l" style="color:var(--cg)">0</span></div>
+  </div>
+  <div class="ps"><div class="ps-t">MOOD HISTORY</div><div id="mch"></div></div>
+  <div class="ps"><div class="ps-t">FORMULA SHEET</div>
+    <div class="fr"><span class="fk">Newton</span><span class="fv">F = m &times; a</span></div>
+    <div class="fr"><span class="fk">Einstein</span><span class="fv">E = mc&sup2;</span></div>
+    <div class="fr"><span class="fk">Pythagoras</span><span class="fv">a&sup2;+b&sup2;=c&sup2;</span></div>
+    <div class="fr"><span class="fk">Ohm's Law</span><span class="fv">V = I &times; R</span></div>
+    <div class="fr"><span class="fk">Circle Area</span><span class="fv">A = &pi;r&sup2;</span></div>
+    <div class="fr"><span class="fk">Speed</span><span class="fv">v = d &divide; t</span></div>
+    <div class="fr"><span class="fk">Power</span><span class="fv">P = I &times; V</span></div>
+    <div class="fr"><span class="fk">Density</span><span class="fv">&rho; = m &divide; V</span></div>
+    <div class="fr"><span class="fk">Kinetic E</span><span class="fv">KE = &frac12;mv&sup2;</span></div>
+  </div>
+  <div class="ps"><div class="ps-t">VOICE SETTINGS</div>
+    <div class="cr"><span class="cl">VOLUME</span><input type="range" id="vol" min="0" max="1" step="0.05" value="1"/></div>
+    <div class="cr"><span class="cl">SPEED</span><input type="range" id="rate" min="0.6" max="1.3" step="0.05" value="0.88" style="accent-color:var(--cy)"/></div>
+    <div class="cr"><span class="cl">PITCH</span><input type="range" id="pitch" min="0.5" max="1.5" step="0.05" value="0.85" style="accent-color:var(--cp)"/></div>
+    <div class="cr"><span class="cl">VOICE</span><select id="vsel"><option>Loading&hellip;</option></select></div>
+  </div>
+</aside>
+<div id="sbar">
+  <div class="sbl">
+    <span><span class="sdot" style="background:var(--cg);box-shadow:0 0 4px var(--cg)"></span>VOICE ENGINE</span>
+    <span><span class="sdot" style="background:var(--c);box-shadow:0 0 4px var(--c)"></span>300+ ARTICLES OFFLINE</span>
+    <span><span class="sdot" style="background:var(--cp);box-shadow:0 0 4px var(--cp)"></span>EMOTION ENGINE</span>
+    <span id="nova-st" style="color:var(--c);font-weight:600;letter-spacing:2px">STANDBY</span>
+  </div>
+  <div class="sbr"><span>CREATED BY MUHAMMAD SUDAIM</span><span>NOVA v4.0</span><span id="rdisp">RESP: &mdash;ms</span></div>
+</div>
+</div>
+<div class="mbg" id="sm"><div class="modal">
+  <button class="mx" onclick="closeM('sm')">&#x2715;</button>
+  <div class="mt">&#9881; SETTINGS</div>
+  <div class="ss"><span class="sl">VOICE &amp; AUDIO</span>
+    <div class="srow"><span class="sk">Auto-speak replies</span><div class="tog on" id="tog-speak" onclick="togS('speak')"></div></div>
+    <div class="srow"><span class="sk">Sound effects</span><div class="tog on" id="tog-sfx" onclick="togS('sfx')"></div></div>
+    <div class="srow"><span class="sk">Typing animation</span><div class="tog on" id="tog-type" onclick="togS('type')"></div></div>
+  </div>
+  <div class="ss"><span class="sl">DISPLAY</span>
+    <div class="srow"><span class="sk">Particle background</span><div class="tog on" id="tog-part" onclick="togS('part')"></div></div>
+  </div>
+  <div class="ss"><span class="sl">REMINDERS</span>
+    <div class="srow"><span class="sk">Water reminders (hourly)</span><div class="tog" id="tog-water" onclick="togS('water')"></div></div>
+  </div>
+  <div class="flex-r" style="margin-top:12px">
+    <button class="btn bh" onclick="closeM('sm')">SAVE</button>
+    <button class="btn br" onclick="resetAll()">RESET ALL DATA</button>
+  </div>
+</div></div>
+<div class="mbg" id="em"><div class="modal">
+  <button class="mx" onclick="closeM('em')">&#x2715;</button>
+  <div class="mt">&#127908; VOICE ENROLLMENT</div>
+  <div class="mbody">Train NOVA to recognize YOUR voice only. Say your wake phrase 3 times. After enrollment, only your voice will wake NOVA.</div>
+  <div style="margin-top:12px">
+    <div class="es" id="es1"><div class="en">1</div><div class="et">Say your wake phrase clearly</div></div>
+    <div class="es" id="es2"><div class="en">2</div><div class="et">Say it again &mdash; second sample</div></div>
+    <div class="es" id="es3"><div class="en">3</div><div class="et">Final time &mdash; third sample</div></div>
+  </div>
+  <div id="enroll-st" style="margin-top:8px;font-family:var(--fm);font-size:10px;color:var(--t3);min-height:16px"></div>
+  <div class="flex-r" style="margin-top:10px">
+    <button class="btn bh" onclick="startEnroll()">&#9654; START ENROLLMENT</button>
+    <button class="btn bg" onclick="clearVP()">&#x1F5D1; CLEAR PROFILE</button>
+    <button class="btn br" onclick="closeM('em')">CLOSE</button>
+  </div>
+</div></div>
+<script src="brain.js"></script>
+<script src="voice.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

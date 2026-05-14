@@ -30,6 +30,27 @@ knowledge = {
     "what can you do": "I can help you with Science, Math, History, Geography, Computer Science and much more! Just ask! 🎓",
     "urdu": "میں نووا ہوں، آپ کا ذہین مطالعہ معاون! میں آپ کی مدد کے لیے یہاں ہوں! 🌟",
     "help": "I can help you with: Science 🔬, Math ➕, History 📜, Geography 🌍, Computer Science 💻, and General Knowledge! What do you need? 📚",
+    "what is photosynthesis": "Photosynthesis is the process by which plants use sunlight, water and CO2 to produce food and oxygen! 🌱",
+    "what is mitosis": "Mitosis is the process of cell division where one cell divides into two identical cells! 🔬",
+    "what is the speed of light": "The speed of light is approximately 299,792,458 meters per second or 3 x 10^8 m/s! ⚡",
+    "what is hydrogen": "Hydrogen is the lightest and most abundant element in the universe with atomic number 1! ⚛️",
+    "what is the solar system": "The solar system consists of the Sun and 8 planets: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus and Neptune! 🪐",
+    "who was quaid e azam": "Quaid-e-Azam Muhammad Ali Jinnah was the founder of Pakistan, born on December 25, 1876. He is known as the Father of the Nation! 🇵🇰",
+    "who was allama iqbal": "Allama Iqbal was a great poet and philosopher who inspired the creation of Pakistan. He wrote Tarana-e-Hind and Tarana-e-Milli! 📜",
+    "what is independence day of pakistan": "Pakistan's Independence Day is celebrated on August 14, 1947, the day Pakistan was created! 🎉🇵🇰",
+    "what is the constitution": "A constitution is the fundamental law of a country that defines the powers of the government and rights of citizens! 📜",
+    "what is water": "Water is a chemical compound with formula H2O. It consists of two hydrogen atoms and one oxygen atom! 💧",
+    "what is electricity": "Electricity is the flow of electric charge through a conductor. It powers our homes, devices and industries! ⚡",
+    "what is the internet": "The internet is a global network of computers that communicate with each other to share information and data! 🌐",
+    "what is programming": "Programming is the process of writing instructions for a computer to follow. Languages include Python, JavaScript, Java and more! 💻",
+    "what is algorithm": "An algorithm is a step by step set of instructions to solve a problem or complete a task! 🧠",
+    "what is database": "A database is an organized collection of structured data stored electronically, like student records or product lists! 🗄️",
+    "what is evolution": "Evolution is the process by which living organisms change over generations through natural selection and genetic mutations! 🧬",
+    "what is ecosystem": "An ecosystem is a community of living organisms interacting with each other and their environment! 🌿",
+    "what is inflation": "Inflation is the rate at which the general level of prices for goods and services rises, reducing purchasing power! 📈",
+    "what is democracy": "Democracy is a system of government where citizens vote to elect their representatives and have a say in decisions! 🗳️",
+    "what is artificial intelligence": "Artificial Intelligence is the simulation of human intelligence in machines that can learn, reason and solve problems! 🤖",
+    
 }
 
 def get_response(message):
