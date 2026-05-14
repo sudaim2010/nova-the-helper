@@ -13,13 +13,40 @@ body {
     align-items: center;
     min-height: 100vh;
     padding: 20px;
+    transition: all 0.3s ease;
+}
+
+body.light-mode {
+    background-color: #f0f0f0;
+    color: #0d0d0d;
+}
+
+#top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 700px;
+    margin-bottom: 20px;
 }
 
 h1 {
     color: #a78bfa;
     font-size: 2rem;
-    margin-bottom: 20px;
-    margin-top: 10px;
+}
+
+#theme-toggle {
+    padding: 8px 16px;
+    background-color: #2d2d44;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+body.light-mode #theme-toggle {
+    background-color: #a78bfa;
 }
 
 #chat-area {
@@ -33,6 +60,11 @@ h1 {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    transition: all 0.3s ease;
+}
+
+body.light-mode #chat-area {
+    background-color: #e0e0f0;
 }
 
 .nova-message {
@@ -42,6 +74,11 @@ h1 {
     max-width: 70%;
     align-self: flex-start;
     color: #a78bfa;
+}
+
+body.light-mode .nova-message {
+    background-color: #c4b5fd;
+    color: #1a1a2e;
 }
 
 .user-message {
@@ -70,6 +107,12 @@ h1 {
     color: white;
     font-size: 1rem;
     outline: none;
+    transition: all 0.3s ease;
+}
+
+body.light-mode #message-input {
+    background-color: #e0e0f0;
+    color: #0d0d0d;
 }
 
 #send-button {
@@ -86,18 +129,6 @@ h1 {
     background-color: #7c3aed;
 }
 
-#typing-indicator {
-    opacity: 0.7;
-    font-style: italic;
-    animation: blink 1s infinite;
-}
-
-@keyframes blink {
-    0% { opacity: 0.3; }
-    50% { opacity: 1; }
-    100% { opacity: 0.3; }
-}
-
 .timestamp {
     font-size: 0.7rem;
     color: #888;
@@ -110,4 +141,16 @@ h1 {
     color: #888;
     margin-top: 4px;
     align-self: flex-start;
+}
+
+#typing-indicator {
+    opacity: 0.7;
+    font-style: italic;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0% { opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { opacity: 0.3; }
 }

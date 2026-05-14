@@ -1,28 +1,28 @@
-const knowledge = {
-    "who made you": "I was made by a talented young developer from Karachi! 🚀",
-    "who are you": "I am Nova, your intelligent AI assistant! ✨",
-    "what is ai": "AI stands for Artificial Intelligence — computers that think and learn like humans! 🤖",
-    "ram": "RAM is temporary memory your computer uses while working. When you turn off your computer everything in RAM is gone!",
-    "rom": "ROM is permanent memory that stores data even when powered off. Think of RAM as your desk and ROM as your drawer!",
-    "hello": "Hey there! 👋 How can I help you today?",
-    "hi": "Hi! Great to see you! 😊",
-    "bye": "Goodbye! Have an amazing day! 👋",
-    "your name": "My name is Nova! Your personal AI assistant! ✨",
-    "how are you": "I am doing great and ready to help! 😊",
-    "what can you do": "I can answer questions and have conversations! I am getting smarter every day! 🧠"
-}
+const sendButton = document.getElementById('send-button');
+const messageInput = document.getElementById('message-input');
+const chatArea = document.getElementById('chat-area');
+const themeToggle = document.getElementById('theme-toggle');
 
-function getNovaResponse(text) {
-    const lowerText = text.toLowerCase();
-    for (const keyword in knowledge) {
-        if (lowerText.includes(keyword)) {
-            return knowledge[keyword];
-        }
+// Theme toggle
+themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('light-mode');
+    if (document.body.classList.contains('light-mode')) {
+        themeToggle.textContent = '☀️ Light Mode';
+        localStorage.setItem('theme', 'light');
+    } else {
+        themeToggle.textContent = '🌙 Dark Mode';
+        localStorage.setItem('theme', 'dark');
     }
-    return "Hmm, I am still learning about that! Try asking me something else. 🤔";
+});
+
+if (localStorage.getItem('theme') === 'light') {
+    document.body.classList.add('light-mode');
+    themeToggle.textContent = '☀️ Light Mode';
 }
 
-// Sound effect
+// User name memory
+let userName = localStorage.getItem('novaUserName');
+
 function playSound() {
     const context = new (window.AudioContext || window.webkitAudioContext)();
     const oscillator = context.createOscillator();
@@ -37,7 +37,6 @@ function playSound() {
     oscillator.stop(context.currentTime + 0.3);
 }
 
-// Timestamp
 function getTime() {
     const now = new Date();
     let hours = now.getHours();
@@ -48,9 +47,20 @@ function getTime() {
     return hours + ':' + minutes + ' ' + ampm;
 }
 
-const sendButton = document.getElementById('send-button');
-const messageInput = document.getElementById('message-input');
-const chatArea = document.getElementById('chat-area');
+function addNovaMessage(text) {
+    const novaMessage = document.createElement('div');
+    novaMessage.classList.add('nova-message');
+    novaMessage.textContent = text;
+    chatArea.appendChild(novaMessage);
+
+    const novaTimestamp = document.createElement('div');
+    novaTimestamp.classList.add('nova-timestamp');
+    novaTimestamp.textContent = getTime();
+    chatArea.appendChild(novaTimestamp);
+
+    chatArea.scrollTop = chatArea.scrollHeight;
+    playSound();
+}
 
 function loadHistory() {
     const saved = localStorage.getItem('novaHistory');
@@ -92,60 +102,87 @@ function removeTyping() {
     if (typing) typing.remove();
 }
 
-function sendMessage() {
+function askUserName() {
+    if (!userName) {
+        setTimeout(() => {
+            addNovaMessage("Welcome to Nova Student Assistant! 📚 Before we start, what is your name?");
+            messageInput.placeholder = "Type your name here...";
+            messageInput.dataset.mode = "name";
+        }, 500);
+    } else {
+        addNovaMessage(`Welcome back ${userName}! 👋 Ready to study? Ask me anything!`);
+    }
+}
+
+// Send message to Python server
+async function sendToPython(message) {
+    try {
+        const response = await fetch('http://127.0.0.1:5000/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: message })
+        });
+        const data = await response.json();
+        return data.response;
+    } catch (error) {
+        return "I am having trouble connecting to my brain! Please make sure the server is running! 🔧";
+    }
+}
+
+async function sendMessage() {
     const userText = messageInput.value.trim();
     if (userText === '') return;
 
     const savedText = userText;
     const time = getTime();
 
-    // User message
+    // Handle name input
+    if (messageInput.dataset.mode === 'name') {
+        userName = savedText;
+        localStorage.setItem('novaUserName', userName);
+        messageInput.dataset.mode = '';
+        messageInput.placeholder = 'Type your message here...';
+
+        const userMessage = document.createElement('div');
+        userMessage.classList.add('user-message');
+        userMessage.textContent = savedText;
+        chatArea.appendChild(userMessage);
+        messageInput.value = '';
+
+        setTimeout(() => {
+            addNovaMessage(`Nice to meet you ${userName}! 🎉 I am Nova, your personal study assistant. Ask me anything about Science, Math, History or Computer Science! 📚`);
+        }, 1000);
+        return;
+    }
+
+    // Show user message
     const userMessage = document.createElement('div');
     userMessage.classList.add('user-message');
     userMessage.textContent = savedText;
     chatArea.appendChild(userMessage);
 
-    // User timestamp
     const userTime = document.createElement('div');
     userTime.classList.add('timestamp');
     userTime.textContent = time;
     chatArea.appendChild(userTime);
 
     saveMessage('user-message', savedText, time);
-
     messageInput.value = '';
     chatArea.scrollTop = chatArea.scrollHeight;
 
     showTyping();
 
-    setTimeout(() => {
-        removeTyping();
-
-        const response = getNovaResponse(savedText);
-        const novaTime = getTime();
-
-        // Nova message
-        const novaMessage = document.createElement('div');
-        novaMessage.classList.add('nova-message');
-        novaMessage.textContent = response;
-        chatArea.appendChild(novaMessage);
-
-        // Nova timestamp
-        const novaTimestamp = document.createElement('div');
-        novaTimestamp.classList.add('nova-timestamp');
-        novaTimestamp.textContent = novaTime;
-        chatArea.appendChild(novaTimestamp);
-
-        saveMessage('nova-message', response, novaTime);
-        chatArea.scrollTop = chatArea.scrollHeight;
-
-        // Play sound
-        playSound();
-
-    }, 1500);
+    // Get response from Python
+    const response = await sendToPython(savedText);
+    removeTyping();
+    addNovaMessage(response);
+    saveMessage('nova-message', response, getTime());
 }
 
 loadHistory();
+askUserName();
 
 sendButton.addEventListener('click', sendMessage);
 messageInput.addEventListener('keypress', function(e) {
