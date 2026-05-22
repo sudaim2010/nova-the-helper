@@ -1,0 +1,2 @@
+sflask
+flask-cors

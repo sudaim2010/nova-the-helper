@@ -1,0 +1,9 @@
+# IMPORTANT — config.js contains your API key
+# Uncomment the line below after adding your key
+# to prevent accidentally uploading it to GitHub
+# config.js
+
+__pycache__/
+*.pyc
+.env
+node_modules/

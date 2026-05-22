@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>NOVA v4.0 — Personal AI Assistant of Muhammad Sudaim</title>
+<title>NOVA — AI Student Assistant</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800;900&family=Exo+2:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 <div id="hbg"></div>
@@ -15,12 +15,12 @@
   <div id="boot-ring"><div id="boot-txt">NOVA</div></div>
   <div id="boot-track"><div id="boot-fill"></div></div>
   <div id="boot-log">INITIALIZING...</div>
-  <div style="font-family:var(--fm);font-size:9px;letter-spacing:3px;color:var(--t3)">PERSONAL AI v4.0 &middot; MUHAMMAD SUDAIM</div>
+  <div style="font-family:var(--fm);font-size:9px;letter-spacing:3px;color:var(--t3)">AI STUDENT ASSISTANT v4.0</div>
 </div>
 <div id="app">
 <header id="hdr">
   <div style="display:flex;align-items:center;gap:18px">
-    <div><div id="logo">N O V A</div><div id="logo-sub">PERSONAL INTELLIGENCE SYSTEM &middot; CREATED BY MUHAMMAD SUDAIM</div></div>
+    <div><div id="logo">N O V A</div><div id="logo-sub">AI STUDENT ASSISTANT &middot; OFFLINE INTELLIGENCE</div></div>
     <div class="hst"><div class="hst-l">UPTIME</div><div class="hst-v" id="hupt">00:00</div></div>
     <div class="hst"><div class="hst-l">XP</div><div class="hst-v" id="hxp">0</div></div>
     <div class="hst"><div class="hst-l">LEVEL</div><div class="hst-v" id="hlv">1</div></div>
@@ -36,7 +36,7 @@
   <div id="orb-wrap">
     <div id="orb" onclick="toggleListen()"><div id="orb-in"><div id="orb-face">&#x1F642;</div></div></div>
     <div id="orb-nm">N O V A</div>
-    <div id="orb-cr">CREATED BY MUHAMMAD SUDAIM</div>
+    <div id="orb-cr">AI STUDENT ASSISTANT</div>
   </div>
   <div id="xp-w">
     <div id="xp-row"><span id="xp-lv">LVL 1 &mdash; ROOKIE</span><span id="xp-pt">0/100 XP</span></div>
@@ -106,6 +106,7 @@
     <div class="tab" onclick="sTab('games')">&#x1F3AE; GAMES</div>
     <div class="tab" onclick="sTab('notes')">&#x1F4DD; NOTES</div>
     <div class="tab" onclick="sTab('lifestyle')">&#x1F319; LIFESTYLE</div>
+    <div class="tab" onclick="sTab('tools')">&#x1F393; STUDENT TOOLS</div>
   </div>
   <div id="mcont">
     <div class="view on" id="tab-chat" style="padding:0;gap:0">
@@ -168,13 +169,82 @@
       </div>
       <div id="nlist"></div>
     </div>
+    <div class="view" id="tab-tools">
+  <div class="vh">STUDENT TOOLS</div>
+  <div class="vsub">GRADE CALCULATOR · POMODORO TIMER · EXAM COUNTDOWN · UNIT CONVERTER</div>
+
+  <!-- GRADE CALCULATOR -->
+  <div class="lc">
+    <div class="lt">📊 GRADE CALCULATOR</div>
+    <div id="grade-subjects"></div>
+    <div class="flex-r" style="margin-top:8px">
+      <input id="subj-name" type="text" placeholder="Subject name..." style="flex:1"/>
+      <input id="subj-marks" type="number" placeholder="Marks obtained..." style="width:140px"/>
+      <input id="subj-total" type="number" placeholder="Total marks..." style="width:140px"/>
+      <button class="btn bh" onclick="addSubject()">+ ADD</button>
+    </div>
+    <div class="flex-r" style="margin-top:8px">
+      <button class="btn bh" onclick="calcGrades()">📊 CALCULATE</button>
+      <button class="btn br" onclick="clearGrades()">🗑 CLEAR</button>
+    </div>
+    <div id="grade-result" style="margin-top:10px;font-family:var(--fh);font-size:13px;color:var(--cg);min-height:20px"></div>
+  </div>
+
+  <!-- POMODORO TIMER -->
+  <div class="lc">
+    <div class="lt">⏰ POMODORO STUDY TIMER</div>
+    <div style="text-align:center;padding:10px">
+      <div id="pom-display" style="font-family:var(--fh);font-size:48px;color:var(--c);letter-spacing:4px">25:00</div>
+      <div id="pom-status" style="font-family:var(--fh);font-size:10px;letter-spacing:3px;color:var(--t3);margin-bottom:12px">STUDY SESSION</div>
+      <div id="pom-count" style="font-family:var(--fh);font-size:10px;color:var(--cy);margin-bottom:12px">🍅 Sessions completed: 0</div>
+      <div class="flex-r" style="justify-content:center;gap:8px">
+        <button class="btn bh" onclick="pomStart()">▶ START</button>
+        <button class="btn bg" onclick="pomPause()">⏸ PAUSE</button>
+        <button class="btn br" onclick="pomReset()">↺ RESET</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXAM COUNTDOWN -->
+  <div class="lc">
+    <div class="lt">📅 EXAM COUNTDOWN</div>
+    <div id="exam-list"></div>
+    <div class="flex-r" style="margin-top:8px">
+      <input id="exam-name" type="text" placeholder="Exam name..." style="flex:1"/>
+      <input id="exam-date" type="date" style="width:160px"/>
+      <button class="btn bh" onclick="addExam()">+ ADD EXAM</button>
+    </div>
+  </div>
+
+  <!-- UNIT CONVERTER -->
+  <div class="lc">
+    <div class="lt">🧮 UNIT CONVERTER</div>
+    <div class="flex-r" style="margin-bottom:8px">
+      <select id="conv-type" onchange="updateConverter()" style="flex:1">
+        <option value="length">Length</option>
+        <option value="weight">Weight</option>
+        <option value="temp">Temperature</option>
+        <option value="speed">Speed</option>
+        <option value="area">Area</option>
+      </select>
+    </div>
+    <div class="flex-r">
+      <input id="conv-input" type="number" placeholder="Enter value..." style="flex:1" oninput="convert()"/>
+      <select id="conv-from" onchange="convert()" style="width:140px"></select>
+      <div style="padding:0 8px;color:var(--t3);font-family:var(--fh)">→</div>
+      <select id="conv-to" onchange="convert()" style="width:140px"></select>
+    </div>
+    <div id="conv-result" style="margin-top:10px;font-family:var(--fh);font-size:16px;color:var(--cg);min-height:20px"></div>
+  </div>
+
+</div>
     <div class="view" id="tab-lifestyle">
       <div class="vh">LIFESTYLE &amp; WELLNESS</div>
       <div class="vsub">PRAYER TIMES &middot; HABITS &middot; WELLNESS &middot; BREATHING</div>
       <div class="lc"><div class="lt">&#x1F54C; PRAYER TIMES &mdash; KARACHI</div><div id="plist"></div></div>
       <div class="lc"><div class="lt">&#x1F4C5; CALENDAR</div>
         <div class="lr"><span class="lk">Hijri Date</span><span class="lv" id="hijri-ls">&mdash;</span></div>
-        <div class="lr"><span class="lk">Birthday Countdown</span><span class="lv" id="bday-ls">&mdash;</span></div>
+        <div class="lr"><span class="lk">Today</span><span class="lv" id="bday-ls">&mdash;</span></div>
       </div>
       <div class="lc"><div class="lt">&#x1F4A7; WELLNESS TRACKER</div>
         <div class="lr"><span class="lk">Water (glasses)</span><span><button class="tbm m" onclick="trk('water',-1)">&#8722;</button><span class="tv" id="t-water">0</span><button class="tbm p" onclick="trk('water',1)">+</button></span></div>
@@ -194,7 +264,7 @@
 </main>
 <aside id="right">
   <div class="ps" style="text-align:center">
-    <div id="bclock">00:00:00</div><div id="bdate">&mdash;</div><div id="hijri">&mdash;</div><div id="btag">&#x1F382; BIRTHDAY IN &mdash; DAYS</div>
+    <div id="bclock">00:00:00</div><div id="bdate">&mdash;</div><div id="hijri">&mdash;</div>
   </div>
   <div class="ps"><div id="dfl">&#9658; FACT OF THE DAY</div><div id="dft">Loading&hellip;</div></div>
   <div class="ps"><div class="ps-t">QUOTE OF THE DAY</div><div id="qt">&mdash;</div><div id="qa">&mdash;</div></div>
@@ -228,9 +298,10 @@
     <span><span class="sdot" style="background:var(--cg);box-shadow:0 0 4px var(--cg)"></span>VOICE ENGINE</span>
     <span><span class="sdot" style="background:var(--c);box-shadow:0 0 4px var(--c)"></span>300+ ARTICLES OFFLINE</span>
     <span><span class="sdot" style="background:var(--cp);box-shadow:0 0 4px var(--cp)"></span>EMOTION ENGINE</span>
+    <span><span class="sdot" style="background:var(--cy);box-shadow:0 0 4px var(--cy)"></span>AI API CONNECTED</span>
     <span id="nova-st" style="color:var(--c);font-weight:600;letter-spacing:2px">STANDBY</span>
   </div>
-  <div class="sbr"><span>CREATED BY MUHAMMAD SUDAIM</span><span>NOVA v4.0</span><span id="rdisp">RESP: &mdash;ms</span></div>
+  <div class="sbr"><span>NOVA AI STUDENT ASSISTANT</span><span>v4.0</span><span id="rdisp">RESP: &mdash;ms</span></div>
 </div>
 </div>
 <div class="mbg" id="sm"><div class="modal">
@@ -244,6 +315,9 @@
   <div class="ss"><span class="sl">DISPLAY</span>
     <div class="srow"><span class="sk">Particle background</span><div class="tog on" id="tog-part" onclick="togS('part')"></div></div>
   </div>
+  <div class="ss"><span class="sl">AI MODE</span>
+    <div class="srow"><span class="sk">Use AI API for unknown questions</span><div class="tog on" id="tog-api" onclick="togS('api')"></div></div>
+  </div>
   <div class="ss"><span class="sl">REMINDERS</span>
     <div class="srow"><span class="sk">Water reminders (hourly)</span><div class="tog" id="tog-water" onclick="togS('water')"></div></div>
   </div>
@@ -255,7 +329,7 @@
 <div class="mbg" id="em"><div class="modal">
   <button class="mx" onclick="closeM('em')">&#x2715;</button>
   <div class="mt">&#127908; VOICE ENROLLMENT</div>
-  <div class="mbody">Train NOVA to recognize YOUR voice only. Say your wake phrase 3 times. After enrollment, only your voice will wake NOVA.</div>
+  <div class="mbody">Train NOVA to recognize YOUR voice only. Say your wake phrase 3 times.</div>
   <div style="margin-top:12px">
     <div class="es" id="es1"><div class="en">1</div><div class="et">Say your wake phrase clearly</div></div>
     <div class="es" id="es2"><div class="en">2</div><div class="et">Say it again &mdash; second sample</div></div>
@@ -268,8 +342,8 @@
     <button class="btn br" onclick="closeM('em')">CLOSE</button>
   </div>
 </div></div>
+<script src="config.js"></script>
 <script src="brain.js"></script>
-<script src="voice.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
