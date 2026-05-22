@@ -315,6 +315,24 @@
   <div class="ss"><span class="sl">DISPLAY</span>
     <div class="srow"><span class="sk">Particle background</span><div class="tog on" id="tog-part" onclick="togS('part')"></div></div>
   </div>
+  <div class="ss"><span class="sl">🌈 CUSTOM THEME</span>
+    <div class="srow">
+        <span class="sk">Primary Color</span>
+        <input type="color" id="theme-primary" value="#00d4ff" onchange="applyTheme()"/>
+    </div>
+    <div class="srow">
+        <span class="sk">Accent Color</span>
+        <input type="color" id="theme-accent" value="#7c3aed" onchange="applyTheme()"/>
+    </div>
+    <div class="srow">
+        <span class="sk">Success Color</span>
+        <input type="color" id="theme-success" value="#10b981" onchange="applyTheme()"/>
+    </div>
+    <div class="flex-r" style="margin-top:8px;gap:6px">
+        <button class="btn bh" onclick="saveTheme()">💾 SAVE THEME</button>
+        <button class="btn br" onclick="resetTheme()">↺ RESET</button>
+    </div>
+</div>
   <div class="ss"><span class="sl">AI MODE</span>
     <div class="srow"><span class="sk">Use AI API for unknown questions</span><div class="tog on" id="tog-api" onclick="togS('api')"></div></div>
   </div>

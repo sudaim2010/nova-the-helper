@@ -818,3 +818,51 @@ document.addEventListener('mousemove', resetIdle);
 document.addEventListener('keypress', resetIdle);
 document.addEventListener('click', resetIdle);
 resetIdle();
+// ═══════════════════════════════════════════════
+//  THEME CREATOR
+// ═══════════════════════════════════════════════
+window.applyTheme = () => {
+    const primary = $('theme-primary').value;
+    const accent = $('theme-accent').value;
+    const success = $('theme-success').value;
+    document.documentElement.style.setProperty('--c', primary);
+    document.documentElement.style.setProperty('--cp', accent);
+    document.documentElement.style.setProperty('--cg', success);
+    document.documentElement.style.setProperty('--c-glow', primary + '40');
+};
+
+window.saveTheme = () => {
+    const theme = {
+        primary: $('theme-primary').value,
+        accent: $('theme-accent').value,
+        success: $('theme-success').value
+    };
+    localStorage.setItem('nova_theme', JSON.stringify(theme));
+    notify('Theme saved! 🌈', 'ok');
+    beep(880, 0.05);
+};
+
+window.resetTheme = () => {
+    document.documentElement.style.setProperty('--c', '#00d4ff');
+    document.documentElement.style.setProperty('--cp', '#7c3aed');
+    document.documentElement.style.setProperty('--cg', '#10b981');
+    $('theme-primary').value = '#00d4ff';
+    $('theme-accent').value = '#7c3aed';
+    $('theme-success').value = '#10b981';
+    localStorage.removeItem('nova_theme');
+    notify('Theme reset to default!', 'warn');
+};
+
+const loadTheme = () => {
+    const saved = localStorage.getItem('nova_theme');
+    if (!saved) return;
+    const theme = JSON.parse(saved);
+    $('theme-primary').value = theme.primary;
+    $('theme-accent').value = theme.accent;
+    $('theme-success').value = theme.success;
+    document.documentElement.style.setProperty('--c', theme.primary);
+    document.documentElement.style.setProperty('--cp', theme.accent);
+    document.documentElement.style.setProperty('--cg', theme.success);
+};
+
+loadTheme();
