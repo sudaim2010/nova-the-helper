@@ -22,14 +22,11 @@
   <div style="display:flex;align-items:center;gap:18px">
     <div><div id="logo">N O V A</div><div id="logo-sub">AI STUDENT ASSISTANT &middot; OFFLINE INTELLIGENCE</div></div>
     <div class="hst"><div class="hst-l">UPTIME</div><div class="hst-v" id="hupt">00:00</div></div>
-    <div class="hst"><div class="hst-l">XP</div><div class="hst-v" id="hxp">0</div></div>
-    <div class="hst"><div class="hst-l">LEVEL</div><div class="hst-v" id="hlv">1</div></div>
-    <div class="hst"><div class="hst-l">STREAK</div><div class="hst-v" id="hstr">0&#x1F525;</div></div>
+    <div class="hst"><div class="hst-l">MSGS</div><div class="hst-v" id="hmsg">0</div></div>
+    <div class="hst"><div class="hst-l">TOPICS</div><div class="hst-v" id="htop">0</div></div>
   </div>
   <div style="display:flex;align-items:center;gap:8px">
     <button class="hbtn" onclick="openM('sm')">&#9881; SETTINGS</button>
-    <button class="hbtn" onclick="openM('em')">&#127908; ENROLL VOICE</button>
-    <button class="hbtn gold" onclick="expChat()">&#8595; EXPORT</button>
   </div>
 </header>
 <aside id="left">
@@ -37,10 +34,6 @@
     <div id="orb" onclick="toggleListen()"><div id="orb-in"><div id="orb-face">&#x1F642;</div></div></div>
     <div id="orb-nm">N O V A</div>
     <div id="orb-cr">AI STUDENT ASSISTANT</div>
-  </div>
-  <div id="xp-w">
-    <div id="xp-row"><span id="xp-lv">LVL 1 &mdash; ROOKIE</span><span id="xp-pt">0/100 XP</span></div>
-    <div id="xp-tr"><div id="xp-b" style="width:0%"></div></div>
   </div>
   <div class="ps"><div class="ps-t">NOVA'S MOOD</div>
     <div id="mood-row"><span id="mood-e">&#x1F60A;</span><span id="mood-n" style="color:var(--cg)">HAPPY</span><div id="mood-tr"><div id="mood-f" style="width:70%;background:var(--cg)"></div></div></div>
@@ -54,59 +47,16 @@
     <div class="str"><span class="stk">WAKE TRIGGERS</span><span class="stv" id="swake">0</span></div>
     <div class="str"><span class="stk">RESP TIME</span><span class="stv" id="sresp">&mdash;</span></div>
   </div>
-  <div class="ps"><div class="ps-t">WAKE WORD SYSTEM</div>
-    <div id="wake-box"><div id="wdot"></div><div id="wtxt">Inactive &mdash; press START</div></div>
-    <div class="wbtns"><button class="wbtn" id="ws" onclick="startWake()">&#9654; START</button><button class="wbtn" id="wst" onclick="stopWake()">&#9632; STOP</button></div>
-    <input id="wpi" type="text" value="hi nova" placeholder="Custom wake phrase&hellip;"/>
-  </div>
-  <div class="ps"><div class="ps-t">ACHIEVEMENTS</div>
-    <div id="ach-g">
-      <div class="ach off" id="ach-first"><span>&#x1F4AC;</span><div class="atip">First Chat</div></div>
-      <div class="ach off" id="ach-q10"><span>&#x1F51F;</span><div class="atip">10 Questions</div></div>
-      <div class="ach off" id="ach-q50"><span>&#x1F3C5;</span><div class="atip">50 Questions</div></div>
-      <div class="ach off" id="ach-quiz"><span>&#x1F9E0;</span><div class="atip">Quiz Master</div></div>
-      <div class="ach off" id="ach-night"><span>&#x1F989;</span><div class="atip">Night Owl</div></div>
-      <div class="ach off" id="ach-wake"><span>&#x1F3A4;</span><div class="atip">Voice Wake</div></div>
-      <div class="ach off" id="ach-str3"><span>&#x1F525;</span><div class="atip">3-Day Streak</div></div>
-      <div class="ach off" id="ach-enc"><span>&#x1F4DA;</span><div class="atip">Encyclopedia</div></div>
-      <div class="ach off" id="ach-note"><span>&#x1F4DD;</span><div class="atip">Note Taker</div></div>
-      <div class="ach off" id="ach-mot"><span>&#x1F680;</span><div class="atip">Motivated</div></div>
-    </div>
-  </div>
-  <div class="ps"><div class="ps-t">QUICK TOPICS</div>
-    <div id="qtags">
-      <span class="qt" onclick="fi('What is gravity')">Gravity</span>
-      <span class="qt" onclick="fi('What is DNA')">DNA</span>
-      <span class="qt" onclick="fi('Black holes')">Black Holes</span>
-      <span class="qt" onclick="fi('Speed of light')">Light Speed</span>
-      <span class="qt" onclick="fi('What is Islam')">Islam</span>
-      <span class="qt" onclick="fi('Tell me about Pakistan')">Pakistan</span>
-      <span class="qt" onclick="fi('What is AI')">AI</span>
-      <span class="qt" onclick="fi('Solar system')">Solar System</span>
-      <span class="qt" onclick="fi('Pythagorean theorem')">Pythagoras</span>
-      <span class="qt" onclick="fi('Human body systems')">Human Body</span>
-      <span class="qt" onclick="fi('Evolution darwin')">Evolution</span>
-      <span class="qt" onclick="fi('Tell me about the Quran')">Quran</span>
-      <span class="qt" onclick="fi('Islamic golden age')">Islamic Golden Age</span>
-      <span class="qt" onclick="fi('Quantum physics')">Quantum</span>
-      <span class="qt" onclick="fi('K2 mountain')">K2</span>
-      <span class="qt" onclick="fi('Climate change')">Climate</span>
-      <span class="qt" onclick="fi('Periodic table')">Chemistry</span>
-      <span class="qt" onclick="fi('Blockchain bitcoin')">Blockchain</span>
-      <span class="qt" onclick="fi('Big bang theory')">Big Bang</span>
-      <span class="qt" onclick="fi('Human brain neuroscience')">Brain</span>
-    </div>
-  </div>
 </aside>
 <main id="center">
   <div id="tabs">
     <div class="tab on" onclick="sTab('chat')">&#x1F4AC; CHAT</div>
     <div class="tab" onclick="sTab('quiz')">&#x1F9E0; QUIZ</div>
-    <div class="tab" onclick="sTab('encyclopedia')">&#x1F4DA; ENCYCLOPEDIA</div>
     <div class="tab" onclick="sTab('games')">&#x1F3AE; GAMES</div>
     <div class="tab" onclick="sTab('notes')">&#x1F4DD; NOTES</div>
     <div class="tab" onclick="sTab('lifestyle')">&#x1F319; LIFESTYLE</div>
     <div class="tab" onclick="sTab('tools')">&#x1F393; STUDENT TOOLS</div>
+    <div class="tab" onclick="sTab('search')">🔍 SEARCH</div>
   </div>
   <div id="mcont">
     <div class="view on" id="tab-chat" style="padding:0;gap:0">
@@ -123,7 +73,7 @@
     </div>
     <div class="view" id="tab-quiz">
       <div class="vh">KNOWLEDGE QUIZ</div>
-      <div class="vsub">TEST YOUR KNOWLEDGE &mdash; EARN XP FOR CORRECT ANSWERS</div>
+      <div class="vsub">TEST YOUR KNOWLEDGE &mdash; EARN POINTS FOR CORRECT ANSWERS</div>
       <div class="qsbar">
         <div class="qs"><div class="qsl">SCORE</div><div class="qsv" id="qsc">0</div></div>
         <div class="qs"><div class="qsl">CORRECT</div><div class="qsv" id="qco">0</div></div>
@@ -135,13 +85,6 @@
       <div id="quiz-q">Press NEXT QUESTION to begin!</div>
       <div id="quiz-opts"></div>
       <button id="qnxt" onclick="nextQ()">&#9654; NEXT QUESTION</button>
-    </div>
-    <div class="view" id="tab-encyclopedia">
-      <div class="vh">ENCYCLOPEDIA</div>
-      <div class="vsub">300+ OFFLINE ARTICLES &mdash; ALL MAJOR SUBJECTS &mdash; NO INTERNET NEEDED</div>
-      <input id="einp" type="text" placeholder="Search any topic&hellip;" oninput="encS(this.value)" onkeydown="if(event.key==='Enter')encS(this.value,1)"/>
-      <div id="eres"><div id="eres-t"></div><div id="eres-b"></div></div>
-      <div id="ecats"></div>
     </div>
     <div class="view" id="tab-games">
       <div class="vh">GAMES &amp; FUN</div>
@@ -169,78 +112,136 @@
       </div>
       <div id="nlist"></div>
     </div>
+    <div class="view" id="tab-search">
+      <div class="vh">🔍 SMART SEARCH</div>
+      <div class="vsub">SEARCH NOTES · CHAT HISTORY · KNOWLEDGE BASE · ALL AT ONCE</div>
+      <div style="position:relative">
+        <input id="search-inp" type="text" placeholder="Search everything in Nova..." oninput="smartSearch(this.value)" style="width:100%;padding:12px 16px;background:var(--cd);border:1px solid var(--b2);color:var(--t);font-family:var(--fb);font-size:14px;outline:none"/>
+        <div style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--t3);font-size:18px">🔍</div>
+      </div>
+      <div id="search-filters" style="display:flex;gap:6px;flex-wrap:wrap">
+        <span class="sf on" onclick="togFilter('notes')">📝 Notes</span>
+        <span class="sf on" onclick="togFilter('chat')">💬 Chat</span>
+        <span class="sf on" onclick="togFilter('knowledge')">📚 Knowledge</span>
+      </div>
+      <div id="search-results"></div>
+    </div>
     <div class="view" id="tab-tools">
-  <div class="vh">STUDENT TOOLS</div>
-  <div class="vsub">GRADE CALCULATOR · POMODORO TIMER · EXAM COUNTDOWN · UNIT CONVERTER</div>
-
-  <!-- GRADE CALCULATOR -->
-  <div class="lc">
-    <div class="lt">📊 GRADE CALCULATOR</div>
-    <div id="grade-subjects"></div>
-    <div class="flex-r" style="margin-top:8px">
-      <input id="subj-name" type="text" placeholder="Subject name..." style="flex:1"/>
-      <input id="subj-marks" type="number" placeholder="Marks obtained..." style="width:140px"/>
-      <input id="subj-total" type="number" placeholder="Total marks..." style="width:140px"/>
-      <button class="btn bh" onclick="addSubject()">+ ADD</button>
-    </div>
-    <div class="flex-r" style="margin-top:8px">
-      <button class="btn bh" onclick="calcGrades()">📊 CALCULATE</button>
-      <button class="btn br" onclick="clearGrades()">🗑 CLEAR</button>
-    </div>
-    <div id="grade-result" style="margin-top:10px;font-family:var(--fh);font-size:13px;color:var(--cg);min-height:20px"></div>
-  </div>
-
-  <!-- POMODORO TIMER -->
-  <div class="lc">
-    <div class="lt">⏰ POMODORO STUDY TIMER</div>
-    <div style="text-align:center;padding:10px">
-      <div id="pom-display" style="font-family:var(--fh);font-size:48px;color:var(--c);letter-spacing:4px">25:00</div>
-      <div id="pom-status" style="font-family:var(--fh);font-size:10px;letter-spacing:3px;color:var(--t3);margin-bottom:12px">STUDY SESSION</div>
-      <div id="pom-count" style="font-family:var(--fh);font-size:10px;color:var(--cy);margin-bottom:12px">🍅 Sessions completed: 0</div>
-      <div class="flex-r" style="justify-content:center;gap:8px">
-        <button class="btn bh" onclick="pomStart()">▶ START</button>
-        <button class="btn bg" onclick="pomPause()">⏸ PAUSE</button>
-        <button class="btn br" onclick="pomReset()">↺ RESET</button>
+      <div class="vh">STUDENT TOOLS</div>
+      <div class="vsub">FORMULA SHEET · GRADE CALCULATOR · POMODORO · EXAM COUNTDOWN · CALCULATOR · CONVERTER</div>
+      <div class="lc">
+        <div class="lt">📐 FORMULA SHEET</div>
+        <div class="fr"><span class="fk">Newton's 2nd Law</span><span class="fv">F = m × a</span></div>
+        <div class="fr"><span class="fk">Einstein</span><span class="fv">E = mc²</span></div>
+        <div class="fr"><span class="fk">Pythagoras</span><span class="fv">a²+b²=c²</span></div>
+        <div class="fr"><span class="fk">Ohm's Law</span><span class="fv">V = I × R</span></div>
+        <div class="fr"><span class="fk">Circle Area</span><span class="fv">A = πr²</span></div>
+        <div class="fr"><span class="fk">Speed</span><span class="fv">v = d ÷ t</span></div>
+        <div class="fr"><span class="fk">Power</span><span class="fv">P = I × V</span></div>
+        <div class="fr"><span class="fk">Density</span><span class="fv">ρ = m ÷ V</span></div>
+        <div class="fr"><span class="fk">Kinetic Energy</span><span class="fv">KE = ½mv²</span></div>
+        <div class="fr"><span class="fk">Quadratic Formula</span><span class="fv">x = (-b ± √(b²-4ac)) / 2a</span></div>
+        <div class="fr"><span class="fk">Circumference</span><span class="fv">C = 2πr</span></div>
+        <div class="fr"><span class="fk">Pressure</span><span class="fv">P = F ÷ A</span></div>
+      </div>
+      <div class="lc">
+        <div class="lt">📊 GRADE CALCULATOR</div>
+        <div id="grade-subjects"></div>
+        <div class="flex-r" style="margin-top:8px">
+          <input id="subj-name" type="text" placeholder="Subject name..." style="flex:1"/>
+          <input id="subj-marks" type="number" placeholder="Marks obtained..." style="width:140px"/>
+          <input id="subj-total" type="number" placeholder="Total marks..." style="width:140px"/>
+          <button class="btn bh" onclick="addSubject()">+ ADD</button>
+        </div>
+        <div class="flex-r" style="margin-top:8px">
+          <button class="btn bh" onclick="calcGrades()">📊 CALCULATE</button>
+          <button class="btn br" onclick="clearGrades()">🗑 CLEAR</button>
+        </div>
+        <div id="grade-result" style="margin-top:10px;font-family:var(--fh);font-size:13px;color:var(--cg);min-height:20px"></div>
+      </div>
+      <div class="lc">
+        <div class="lt">⏰ POMODORO STUDY TIMER</div>
+        <div style="text-align:center;padding:10px">
+          <div id="pom-display" style="font-family:var(--fh);font-size:48px;color:var(--c);letter-spacing:4px">25:00</div>
+          <div id="pom-status" style="font-family:var(--fh);font-size:10px;letter-spacing:3px;color:var(--t3);margin-bottom:12px">STUDY SESSION</div>
+          <div id="pom-count" style="font-family:var(--fh);font-size:10px;color:var(--cy);margin-bottom:12px">🍅 Sessions completed: 0</div>
+          <div class="flex-r" style="justify-content:center;gap:8px">
+            <button class="btn bh" onclick="pomStart()">▶ START</button>
+            <button class="btn bg" onclick="pomPause()">⏸ PAUSE</button>
+            <button class="btn br" onclick="pomReset()">↺ RESET</button>
+          </div>
+        </div>
+      </div>
+      <div class="lc">
+        <div class="lt">📅 EXAM COUNTDOWN</div>
+        <div id="exam-list"></div>
+        <div class="flex-r" style="margin-top:8px">
+          <input id="exam-name" type="text" placeholder="Exam name..." style="flex:1"/>
+          <input id="exam-date" type="date" style="width:160px"/>
+          <button class="btn bh" onclick="addExam()">+ ADD EXAM</button>
+        </div>
+      </div>
+      <div class="lc">
+        <div class="lt">🔢 SCIENTIFIC CALCULATOR</div>
+        <div id="calc-display"><div id="calc-expr"></div><div id="calc-result">0</div></div>
+        <div id="calc-grid">
+          <button class="cb cs" onclick="calcFn('clear')">C</button>
+          <button class="cb cs" onclick="calcFn('sign')">+/-</button>
+          <button class="cb cs" onclick="calcFn('percent')">%</button>
+          <button class="cb co" onclick="calcInput('/')">÷</button>
+          <button class="cb" onclick="calcFn('sin')">sin</button>
+          <button class="cb" onclick="calcFn('cos')">cos</button>
+          <button class="cb" onclick="calcFn('tan')">tan</button>
+          <button class="cb co" onclick="calcInput('*')">×</button>
+          <button class="cb" onclick="calcFn('log')">log</button>
+          <button class="cb" onclick="calcFn('sqrt')">√</button>
+          <button class="cb" onclick="calcFn('sq')">x²</button>
+          <button class="cb co" onclick="calcInput('-')">−</button>
+          <button class="cb" onclick="calcFn('pi')">π</button>
+          <button class="cb" onclick="calcFn('e')">e</button>
+          <button class="cb" onclick="calcInput('(')">(</button>
+          <button class="cb co" onclick="calcInput('+')">+</button>
+          <button class="cb" onclick="calcFn('pow')">xʸ</button>
+          <button class="cb" onclick="calcInput('0')">0</button>
+          <button class="cb" onclick="calcFn('dot')">.</button>
+          <button class="cb co" onclick="calcFn('equals')">=</button>
+          <button class="cb" onclick="calcInput('1')">1</button>
+          <button class="cb" onclick="calcInput('2')">2</button>
+          <button class="cb" onclick="calcInput('3')">3</button>
+          <button class="cb" onclick="calcFn('back')">⌫</button>
+          <button class="cb" onclick="calcInput('4')">4</button>
+          <button class="cb" onclick="calcInput('5')">5</button>
+          <button class="cb" onclick="calcInput('6')">6</button>
+          <button class="cb" onclick="calcInput(')')">)</button>
+          <button class="cb" onclick="calcInput('7')">7</button>
+          <button class="cb" onclick="calcInput('8')">8</button>
+          <button class="cb" onclick="calcInput('9')">9</button>
+          <button class="cb" onclick="calcFn('abs')">|x|</button>
+        </div>
+      </div>
+      <div class="lc">
+        <div class="lt">🧮 UNIT CONVERTER</div>
+        <div class="flex-r" style="margin-bottom:8px">
+          <select id="conv-type" onchange="updateConverter()" style="flex:1">
+            <option value="length">Length</option>
+            <option value="weight">Weight</option>
+            <option value="temp">Temperature</option>
+            <option value="speed">Speed</option>
+            <option value="area">Area</option>
+          </select>
+        </div>
+        <div class="flex-r">
+          <input id="conv-input" type="number" placeholder="Enter value..." style="flex:1" oninput="convert()"/>
+          <select id="conv-from" onchange="convert()" style="width:140px"></select>
+          <div style="padding:0 8px;color:var(--t3);font-family:var(--fh)">→</div>
+          <select id="conv-to" onchange="convert()" style="width:140px"></select>
+        </div>
+        <div id="conv-result" style="margin-top:10px;font-family:var(--fh);font-size:16px;color:var(--cg);min-height:20px"></div>
       </div>
     </div>
-  </div>
-
-  <!-- EXAM COUNTDOWN -->
-  <div class="lc">
-    <div class="lt">📅 EXAM COUNTDOWN</div>
-    <div id="exam-list"></div>
-    <div class="flex-r" style="margin-top:8px">
-      <input id="exam-name" type="text" placeholder="Exam name..." style="flex:1"/>
-      <input id="exam-date" type="date" style="width:160px"/>
-      <button class="btn bh" onclick="addExam()">+ ADD EXAM</button>
-    </div>
-  </div>
-
-  <!-- UNIT CONVERTER -->
-  <div class="lc">
-    <div class="lt">🧮 UNIT CONVERTER</div>
-    <div class="flex-r" style="margin-bottom:8px">
-      <select id="conv-type" onchange="updateConverter()" style="flex:1">
-        <option value="length">Length</option>
-        <option value="weight">Weight</option>
-        <option value="temp">Temperature</option>
-        <option value="speed">Speed</option>
-        <option value="area">Area</option>
-      </select>
-    </div>
-    <div class="flex-r">
-      <input id="conv-input" type="number" placeholder="Enter value..." style="flex:1" oninput="convert()"/>
-      <select id="conv-from" onchange="convert()" style="width:140px"></select>
-      <div style="padding:0 8px;color:var(--t3);font-family:var(--fh)">→</div>
-      <select id="conv-to" onchange="convert()" style="width:140px"></select>
-    </div>
-    <div id="conv-result" style="margin-top:10px;font-family:var(--fh);font-size:16px;color:var(--cg);min-height:20px"></div>
-  </div>
-
-</div>
     <div class="view" id="tab-lifestyle">
       <div class="vh">LIFESTYLE &amp; WELLNESS</div>
-      <div class="vsub">PRAYER TIMES &middot; HABITS &middot; WELLNESS &middot; BREATHING</div>
+      <div class="vsub">PRAYER TIMES · HABITS · WELLNESS · BREATHING</div>
       <div class="lc"><div class="lt">&#x1F54C; PRAYER TIMES &mdash; KARACHI</div><div id="plist"></div></div>
       <div class="lc"><div class="lt">&#x1F4C5; CALENDAR</div>
         <div class="lr"><span class="lk">Hijri Date</span><span class="lv" id="hijri-ls">&mdash;</span></div>
@@ -269,29 +270,6 @@
   <div class="ps"><div id="dfl">&#9658; FACT OF THE DAY</div><div id="dft">Loading&hellip;</div></div>
   <div class="ps"><div class="ps-t">QUOTE OF THE DAY</div><div id="qt">&mdash;</div><div id="qa">&mdash;</div></div>
   <div class="ps"><div class="ps-t">WORD OF THE DAY</div><div id="vw">&mdash;</div><div id="vtype">&mdash;</div><div id="vdef">&mdash;</div><div id="vex">&mdash;</div></div>
-  <div class="ps"><div class="ps-t">STREAKS</div>
-    <div class="si"><span class="sic">&#x1F525;</span><div class="sinf"><div class="snm">Daily Streak</div><div class="sds">Talk to NOVA every day</div></div><span class="scnt" id="str-d">0</span></div>
-    <div class="si"><span class="sic">&#x1F4A7;</span><div class="sinf"><div class="snm">Hydration</div><div class="sds">8 glasses today</div></div><span class="scnt" id="str-w" style="color:var(--c)">0/8</span></div>
-    <div class="si"><span class="sic">&#x1F4DA;</span><div class="sinf"><div class="snm">Learning</div><div class="sds">Questions today</div></div><span class="scnt" id="str-l" style="color:var(--cg)">0</span></div>
-  </div>
-  <div class="ps"><div class="ps-t">MOOD HISTORY</div><div id="mch"></div></div>
-  <div class="ps"><div class="ps-t">FORMULA SHEET</div>
-    <div class="fr"><span class="fk">Newton</span><span class="fv">F = m &times; a</span></div>
-    <div class="fr"><span class="fk">Einstein</span><span class="fv">E = mc&sup2;</span></div>
-    <div class="fr"><span class="fk">Pythagoras</span><span class="fv">a&sup2;+b&sup2;=c&sup2;</span></div>
-    <div class="fr"><span class="fk">Ohm's Law</span><span class="fv">V = I &times; R</span></div>
-    <div class="fr"><span class="fk">Circle Area</span><span class="fv">A = &pi;r&sup2;</span></div>
-    <div class="fr"><span class="fk">Speed</span><span class="fv">v = d &divide; t</span></div>
-    <div class="fr"><span class="fk">Power</span><span class="fv">P = I &times; V</span></div>
-    <div class="fr"><span class="fk">Density</span><span class="fv">&rho; = m &divide; V</span></div>
-    <div class="fr"><span class="fk">Kinetic E</span><span class="fv">KE = &frac12;mv&sup2;</span></div>
-  </div>
-  <div class="ps"><div class="ps-t">VOICE SETTINGS</div>
-    <div class="cr"><span class="cl">VOLUME</span><input type="range" id="vol" min="0" max="1" step="0.05" value="1"/></div>
-    <div class="cr"><span class="cl">SPEED</span><input type="range" id="rate" min="0.6" max="1.3" step="0.05" value="0.88" style="accent-color:var(--cy)"/></div>
-    <div class="cr"><span class="cl">PITCH</span><input type="range" id="pitch" min="0.5" max="1.5" step="0.05" value="0.85" style="accent-color:var(--cp)"/></div>
-    <div class="cr"><span class="cl">VOICE</span><select id="vsel"><option>Loading&hellip;</option></select></div>
-  </div>
 </aside>
 <div id="sbar">
   <div class="sbl">
@@ -304,6 +282,7 @@
   <div class="sbr"><span>NOVA AI STUDENT ASSISTANT</span><span>v4.0</span><span id="rdisp">RESP: &mdash;ms</span></div>
 </div>
 </div>
+<!-- SETTINGS MODAL — Everything in one place -->
 <div class="mbg" id="sm"><div class="modal">
   <button class="mx" onclick="closeM('sm')">&#x2715;</button>
   <div class="mt">&#9881; SETTINGS</div>
@@ -312,27 +291,59 @@
     <div class="srow"><span class="sk">Sound effects</span><div class="tog on" id="tog-sfx" onclick="togS('sfx')"></div></div>
     <div class="srow"><span class="sk">Typing animation</span><div class="tog on" id="tog-type" onclick="togS('type')"></div></div>
   </div>
+  <div class="ss"><span class="sl">VOICE SETTINGS</span>
+    <div class="cr"><span class="cl">VOLUME</span><input type="range" id="vol" min="0" max="1" step="0.05" value="1"/></div>
+    <div class="cr"><span class="cl">SPEED</span><input type="range" id="rate" min="0.6" max="1.3" step="0.05" value="0.88" style="accent-color:var(--cy)"/></div>
+    <div class="cr"><span class="cl">PITCH</span><input type="range" id="pitch" min="0.5" max="1.5" step="0.05" value="0.85" style="accent-color:var(--cp)"/></div>
+    <div class="cr"><span class="cl">VOICE</span><select id="vsel"><option>Loading&hellip;</option></select></div>
+  </div>
+  <div class="ss"><span class="sl">&#127908; VOICE ENROLLMENT</span>
+    <div style="font-size:11px;color:var(--t2);font-family:var(--fb);margin-bottom:8px">Train NOVA to recognise YOUR voice only. Say your wake phrase 3 times.</div>
+    <div class="es" id="es1"><div class="en">1</div><div class="et">Say your wake phrase clearly</div></div>
+    <div class="es" id="es2"><div class="en">2</div><div class="et">Say it again &mdash; second sample</div></div>
+    <div class="es" id="es3"><div class="en">3</div><div class="et">Final time &mdash; third sample</div></div>
+    <div id="enroll-st" style="margin-top:8px;font-family:var(--fm);font-size:10px;color:var(--t3);min-height:16px"></div>
+    <div class="flex-r" style="margin-top:8px">
+      <button class="btn bh" onclick="startEnroll()">&#9654; START ENROLLMENT</button>
+      <button class="btn bg" onclick="clearVP()">&#x1F5D1; CLEAR PROFILE</button>
+    </div>
+  </div>
+  <div class="ss"><span class="sl">WAKE WORD SYSTEM</span>
+    <div id="wake-box" style="margin-bottom:8px"><div id="wdot"></div><div id="wtxt">Inactive &mdash; press START</div></div>
+    <input id="wpi" type="text" value="hi nova" placeholder="Custom wake phrase&hellip;" style="width:100%;margin-bottom:8px;padding:5px 10px;background:var(--cpd);border:1px solid rgba(124,58,237,0.3);color:var(--t);font-family:var(--fm);font-size:10px;outline:none"/>
+    <div class="flex-r">
+      <button class="btn bh" id="ws" onclick="startWake()">&#9654; START WAKE WORD</button>
+      <button class="btn br" id="wst" onclick="stopWake()">&#9632; STOP</button>
+    </div>
+  </div>
+  <div class="ss"><span class="sl">EXPORT DATA</span>
+    <div class="flex-r">
+      <button class="btn bg" onclick="expChat()">&#8595; EXPORT CHAT</button>
+      <button class="btn bg" onclick="expNotes()">&#8595; EXPORT NOTES</button>
+    </div>
+  </div>
   <div class="ss"><span class="sl">DISPLAY</span>
     <div class="srow"><span class="sk">Particle background</span><div class="tog on" id="tog-part" onclick="togS('part')"></div></div>
   </div>
   <div class="ss"><span class="sl">🌈 CUSTOM THEME</span>
-    <div class="srow">
-        <span class="sk">Primary Color</span>
-        <input type="color" id="theme-primary" value="#00d4ff" onchange="applyTheme()"/>
-    </div>
-    <div class="srow">
-        <span class="sk">Accent Color</span>
-        <input type="color" id="theme-accent" value="#7c3aed" onchange="applyTheme()"/>
-    </div>
-    <div class="srow">
-        <span class="sk">Success Color</span>
-        <input type="color" id="theme-success" value="#10b981" onchange="applyTheme()"/>
-    </div>
+    <div class="srow"><span class="sk">Primary Color</span><input type="color" id="theme-primary" value="#00d4ff" onchange="applyTheme()"/></div>
+    <div class="srow"><span class="sk">Accent Color</span><input type="color" id="theme-accent" value="#7c3aed" onchange="applyTheme()"/></div>
+    <div class="srow"><span class="sk">Success Color</span><input type="color" id="theme-success" value="#10b981" onchange="applyTheme()"/></div>
     <div class="flex-r" style="margin-top:8px;gap:6px">
-        <button class="btn bh" onclick="saveTheme()">💾 SAVE THEME</button>
-        <button class="btn br" onclick="resetTheme()">↺ RESET</button>
+      <button class="btn bh" onclick="saveTheme()">💾 SAVE THEME</button>
+      <button class="btn br" onclick="resetTheme()">↺ RESET</button>
     </div>
-</div>
+  </div>
+  <div class="ss"><span class="sl">🤖 NOVA'S MEMORY</span>
+    <div id="memory-list"></div>
+    <div class="flex-r" style="margin-top:8px">
+      <input id="memory-inp" type="text" placeholder="Tell Nova something to remember..." style="flex:1;padding:8px 12px;background:var(--cd);border:1px solid var(--b2);color:var(--t);font-family:var(--fb);font-size:12px;outline:none" onkeydown="if(event.key==='Enter')addMemory()"/>
+      <button class="btn bh" onclick="addMemory()">+ SAVE</button>
+    </div>
+    <div class="flex-r" style="margin-top:6px">
+      <button class="btn br" onclick="clearMemory()">🗑 CLEAR ALL MEMORIES</button>
+    </div>
+  </div>
   <div class="ss"><span class="sl">AI MODE</span>
     <div class="srow"><span class="sk">Use AI API for unknown questions</span><div class="tog on" id="tog-api" onclick="togS('api')"></div></div>
   </div>
@@ -340,24 +351,8 @@
     <div class="srow"><span class="sk">Water reminders (hourly)</span><div class="tog" id="tog-water" onclick="togS('water')"></div></div>
   </div>
   <div class="flex-r" style="margin-top:12px">
-    <button class="btn bh" onclick="closeM('sm')">SAVE</button>
+    <button class="btn bh" onclick="closeM('sm')">SAVE &amp; CLOSE</button>
     <button class="btn br" onclick="resetAll()">RESET ALL DATA</button>
-  </div>
-</div></div>
-<div class="mbg" id="em"><div class="modal">
-  <button class="mx" onclick="closeM('em')">&#x2715;</button>
-  <div class="mt">&#127908; VOICE ENROLLMENT</div>
-  <div class="mbody">Train NOVA to recognize YOUR voice only. Say your wake phrase 3 times.</div>
-  <div style="margin-top:12px">
-    <div class="es" id="es1"><div class="en">1</div><div class="et">Say your wake phrase clearly</div></div>
-    <div class="es" id="es2"><div class="en">2</div><div class="et">Say it again &mdash; second sample</div></div>
-    <div class="es" id="es3"><div class="en">3</div><div class="et">Final time &mdash; third sample</div></div>
-  </div>
-  <div id="enroll-st" style="margin-top:8px;font-family:var(--fm);font-size:10px;color:var(--t3);min-height:16px"></div>
-  <div class="flex-r" style="margin-top:10px">
-    <button class="btn bh" onclick="startEnroll()">&#9654; START ENROLLMENT</button>
-    <button class="btn bg" onclick="clearVP()">&#x1F5D1; CLEAR PROFILE</button>
-    <button class="btn br" onclick="closeM('em')">CLOSE</button>
   </div>
 </div></div>
 <script src="config.js"></script>

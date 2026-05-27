@@ -27,28 +27,18 @@ const askAI = async (question) => {
   try {
     const response = await fetch(NOVA_API_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
         api_key: NOVA_API_KEY,
         model: NOVA_MODEL,
         messages: [
-          {
-            role: "system",
-            content: "You are NOVA, an intelligent AI student assistant. Give clear, educational, concise answers suitable for students. Keep responses under 150 words. Be friendly and encouraging."
-          },
-          {
-            role: "user",
-            content: question
-          }
+          {role: "system", content: "You are NOVA, an intelligent AI student assistant. Give clear, educational, concise answers suitable for students. Keep responses under 150 words. Be friendly and encouraging."},
+          {role: "user", content: question}
         ]
       })
     });
     const data = await response.json();
-    if (data.choices && data.choices[0]) {
-      return data.choices[0].message.content;
-    }
+    if (data.choices && data.choices[0]) return data.choices[0].message.content;
     return null;
   } catch (e) {
     console.error('AI API Error:', e);
@@ -90,10 +80,10 @@ const setMood=k=>{
 // ═══════════════════════════════════════════════
 const LEVELS=[{l:1,n:'ROOKIE',xp:0},{l:2,n:'LEARNER',xp:100},{l:3,n:'STUDENT',xp:250},{l:4,n:'SCHOLAR',xp:500},{l:5,n:'EXPERT',xp:900},{l:6,n:'MASTER',xp:1400},{l:7,n:'GENIUS',xp:2000},{l:8,n:'SAGE',xp:2800},{l:9,n:'ORACLE',xp:3800},{l:10,n:'LEGEND',xp:5000}];
 const addXP=pts=>{
-  xp+=pts;$('hxp').textContent=xp;
+  xp+=pts;if($('hxp'))$('hxp').textContent=xp;
   const cur=LEVELS.filter(l=>xp>=l.xp).pop();
   if(cur&&cur.l!==level){level=cur.l;notify('LEVEL UP! Level '+level+' — '+cur.n,'ok');}
-  $('hlv').textContent=level;
+  if($('hlv'))$('hlv').textContent=level;
   const next=LEVELS[level]||LEVELS[LEVELS.length-1],prev=LEVELS[level-1]||LEVELS[0];
   const pct=Math.min(100,((xp-prev.xp)/(next.xp-prev.xp))*100||0);
   $('xp-b').style.width=pct+'%';$('xp-lv').textContent='LVL '+level+' — '+prev.n;$('xp-pt').textContent=xp+'/'+next.xp+' XP';
@@ -179,19 +169,17 @@ const speak=txt=>{
   if(!settings.speak)return;
   synth.cancel();speaking=true;
   $('orb').className='S';$('slbl').textContent='NOVA SPEAKING...';$('slbl').style.color='var(--cp)';
-  $('nova-st').textContent='SPEAKING';if(animId)cancelAnimationFrame(animId);drawWave(true,MOODS[mood].c);
+  if($('nova-st'))$('nova-st').textContent='SPEAKING';if(animId)cancelAnimationFrame(animId);drawWave(true,MOODS[mood].c);
   const u=new SpeechSynthesisUtterance(txt);
   if(selVoice)u.voice=selVoice;
   u.volume=+$('vol').value;u.rate=+$('rate').value;u.pitch=+$('pitch').value;
   u.onend=u.onerror=doneSpeaking;synth.speak(u);
 };
 const doneSpeaking=()=>{
-  speaking=false;$('orb').className='';$('nova-st').textContent='STANDBY';stopViz();
+  speaking=false;$('orb').className='';if($('nova-st'))$('nova-st').textContent='STANDBY';stopViz();
   if(wakeOn&&!listening){$('slbl').textContent='LISTENING FOR "'+customPhrase.toUpperCase()+'"';$('slbl').style.color='var(--t3)';startWakeLoop();}
   else{$('slbl').textContent='READY — TAP MIC OR TYPE';$('slbl').style.color='var(--t3)';}
 };
-
-// SFX
 const beep=(f,v=.08)=>{if(!settings.sfx)return;try{const a=new AudioContext(),o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=f;g.gain.setValueAtTime(v,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+.25);o.start();o.stop(a.currentTime+.25);}catch(e){}};
 
 // ═══════════════════════════════════════════════
@@ -269,7 +257,7 @@ const startFullListen=async()=>{
   let finalTxt='';
   rec.onstart=async()=>{
     listening=true;$('orb').className='L';
-    $('nova-st').textContent='LISTENING';$('wdot').className='hear';beep(660,.05);
+    if($('nova-st'))$('nova-st').textContent='LISTENING';$('wdot').className='hear';beep(660,.05);
     await startViz();if(animId)cancelAnimationFrame(animId);drawWave(true,'#00d4ff');
   };
   rec.onresult=e=>{
@@ -294,6 +282,30 @@ window.toggleListen=()=>{if(speaking){synth.cancel();doneSpeaking();return;}if(l
 const sTxt=()=>{const v=$('tinp').value.trim();if(!v)return;$('tinp').value='';addMsg('user',v,false);processInput(v);};
 
 // ═══════════════════════════════════════════════
+//  NOVA MEMORY REPLY
+// ═══════════════════════════════════════════════
+const getMemoryReply = (txt) => {
+    const lowerTxt = txt.toLowerCase();
+    if (lowerTxt.includes('remember that') ||
+        lowerTxt.includes('remember my') ||
+        lowerTxt.includes("don't forget") ||
+        lowerTxt.includes('dont forget')) {
+        const memText = txt.replace(/remember that|remember my|don't forget|dont forget/gi, '').trim();
+        if (memText) {
+            memories.push({ text: memText, date: new Date().toLocaleDateString() });
+            localStorage.setItem('nova_memories', JSON.stringify(memories));
+            renderMemories();
+            return `Got it! Saved to memory: "${memText}" 🧠`;
+        }
+    }
+    if (lowerTxt.includes('what do you remember') || lowerTxt.includes('do you remember')) {
+        if (!memories.length) return "No memories saved yet! Say 'Remember that...' and I will save it! 🧠";
+        return `Here is what I remember:\n${memories.map((m,i) => `${i+1}. ${m.text}`).join('\n')} 🧠`;
+    }
+    return null;
+};
+
+// ═══════════════════════════════════════════════
 //  CHAT
 // ═══════════════════════════════════════════════
 const addMsg=(role,text,spk=true)=>{
@@ -314,31 +326,35 @@ const addMsg=(role,text,spk=true)=>{
 const showTyping=()=>{const d=document.createElement('div');d.className='msg mn';d.id='tmsg';const s=document.createElement('div');s.className='mspk n';s.textContent='NOVA';d.appendChild(s);const t=document.createElement('div');t.className='ti';t.innerHTML='<span></span><span></span><span></span>';d.appendChild(t);$('chat-log').appendChild(d);$('chat-log').scrollTop=$('chat-log').scrollHeight;};
 const hideTyping=()=>{const t=$('tmsg');if(t)t.remove();};
 
-const processInput=async txt=>{
+const processInput = async txt=>{
   if(!txt||!txt.trim())return;
-  qs++;$('sq').textContent=qs;$('str-l').textContent=qs;
-  $('nova-st').textContent='THINKING';showTyping();respT=Date.now();
+  qs++;$('sq').textContent=qs;if($('str-l'))$('str-l').textContent=qs;
+  if($('nova-st'))$('nova-st').textContent='THINKING';showTyping();respT=Date.now();
 
-  // First check offline knowledge base
+  // First check memory
+  const memReply = getMemoryReply(txt);
+  if (memReply) {
+    setTimeout(()=>{ hideTyping(); addMsg('nova', memReply); }, 400);
+    const ms=Date.now()-respT;$('sresp').textContent=ms+'ms';if($('rdisp'))$('rdisp').textContent='RESP: '+ms+'ms';
+    addXP(5);checkAch();
+    return;
+  }
+
   const offlineReply = getReply(txt);
   const isUnknown = offlineReply.includes("still learning") || offlineReply.includes("Try asking");
 
   if (isUnknown && settings.api && NOVA_API_KEY !== "YOUR_API_KEY_HERE") {
-    // Use AI API for unknown questions
-    $('nova-st').textContent='AI THINKING';
+    if($('nova-st'))$('nova-st').textContent='AI THINKING';
     const aiReply = await askAI(txt);
     hideTyping();
     const finalReply = aiReply || offlineReply;
     addMsg('nova', finalReply);
     if (aiReply) notify('AI Response', 'ok', 1500);
   } else {
-    setTimeout(()=>{
-      hideTyping();
-      addMsg('nova', offlineReply);
-    }, Math.random()*250+350);
+    setTimeout(()=>{ hideTyping(); addMsg('nova', offlineReply); }, Math.random()*250+350);
   }
 
-  const ms=Date.now()-respT;$('sresp').textContent=ms+'ms';$('rdisp').textContent='RESP: '+ms+'ms';
+  const ms=Date.now()-respT;$('sresp').textContent=ms+'ms';if($('rdisp'))$('rdisp').textContent='RESP: '+ms+'ms';
   addXP(5);checkAch();
 };
 
@@ -357,7 +373,7 @@ window.nextQ=()=>{
 };
 const ansQ=(idx,el)=>{
   document.querySelectorAll('.qo').forEach(b=>b.onclick=null);
-  if(idx===curQ.a){el.classList.add('ok');qCorrect++;qStreak++;qScore+=10+qStreak*2;beep(880,.08);notify('+'+( 10+qStreak*2)+' pts! Correct!','ok');addXP(15);}
+  if(idx===curQ.a){el.classList.add('ok');qCorrect++;qStreak++;qScore+=10+qStreak*2;beep(880,.08);notify('+'+(10+qStreak*2)+' pts! Correct!','ok');addXP(15);}
   else{el.classList.add('no');document.querySelectorAll('.qo')[curQ.a].classList.add('ok');qStreak=0;beep(220,.05);notify('Wrong! Better luck next time.','err');}
   $('qsc').textContent=qScore;$('qco').textContent=qCorrect;$('qst').textContent=qStreak+'🔥';$('squiz').textContent=qScore;
   checkAch();
@@ -444,19 +460,16 @@ window.togGoal=i=>{goals[i].done=!goals[i].done;renderGoals();save();if(goals[i]
 // ═══════════════════════════════════════════════
 //  LIFESTYLE
 // ═══════════════════════════════════════════════
-window.trk=(k,v)=>{trackers[k]=Math.max(0,+(trackers[k]||0)+v);$('t-'+k).textContent=trackers[k];save();if(k==='water'){$('str-w').textContent=trackers[k]+'/8';if(trackers[k]>=8)notify('Great hydration today!','ok');}};
+window.trk=(k,v)=>{trackers[k]=Math.max(0,+(trackers[k]||0)+v);$('t-'+k).textContent=trackers[k];save();if(k==='water'){if($('str-w'))$('str-w').textContent=trackers[k]+'/8';if(trackers[k]>=8)notify('Great hydration today!','ok');}};
 const renderPrayer=()=>{
   const prayers=[{n:'Fajr',t:'05:15'},{n:'Dhuhr',t:'12:30'},{n:'Asr',t:'15:45'},{n:'Maghrib',t:'18:20'},{n:'Isha',t:'19:45'}];
   const now=new Date(),cur=now.getHours()*60+now.getMinutes();
   let next=-1;prayers.forEach((p,i)=>{const[h,m]=p.t.split(':').map(Number);if(h*60+m>cur&&next===-1)next=i;});
   $('plist').innerHTML=prayers.map((p,i)=>'<div class="pr'+(i===next?' cur':'')+'"><span class="pn">'+(i===next?'▶ ':'')+p.n+'</span><span class="pt">'+p.t+'</span></div>').join('');
 };
-
-// BREATHING
 window.startBreath=()=>{
   const phases=[{t:'INHALE',d:4},{t:'HOLD',d:7},{t:'EXHALE',d:8}];
-  let pi=0,cnt=0;
-  const o=$('borb');
+  let pi=0,cnt=0;const o=$('borb');
   const step=()=>{const p=phases[pi];o.textContent=p.t+' ('+cnt+')';cnt--;
     if(cnt<0){pi=(pi+1)%phases.length;cnt=phases[pi].d;if(pi===0)o.textContent='CYCLE COMPLETE';}
     setTimeout(step,1000);};
@@ -481,13 +494,12 @@ setInterval(updateClock,1000);updateClock();
 const FACTS=["The human brain has 86 billion neurons with 100 trillion connections.","DNA in one human cell stretches to 2 meters if unwound.","Light from the Sun takes 8 minutes 20 seconds to reach Earth.","The Milky Way contains 200-400 billion stars.","Pakistan has more glaciers than anywhere outside the polar regions.","The Quran was revealed over 23 years starting in 610 CE.","Al-Khwarizmi invented algebra in the 9th century CE.","The human heart beats 100,000 times every day.","K2 is the world's second highest peak at 8,611 meters.","Quantum computers can solve in seconds what takes classical computers millennia.","The human body replaces 330 billion cells every day.","The internet carries 5 exabytes of data every day.","Pi has been calculated to over 100 trillion decimal places.","The first Islamic Golden Age lasted from 750 to 1258 CE.","Photosynthesis produces all the oxygen we breathe."];
 const QUOTES=[{q:"The acquisition of knowledge is a duty incumbent on every Muslim.",a:"Prophet Muhammad (PBUH)"},{q:"An investment in knowledge pays the best interest.",a:"Benjamin Franklin"},{q:"The more I learn, the more I realize how much I don't know.",a:"Albert Einstein"},{q:"Education is the most powerful weapon you can use to change the world.",a:"Nelson Mandela"},{q:"Iqra — Read. The first word revealed in the Quran.",a:"Surah Al-Alaq 96:1"},{q:"Science without religion is lame, religion without science is blind.",a:"Albert Einstein"},{q:"The ink of the scholar is more sacred than the blood of the martyr.",a:"Islamic Saying"},{q:"In the middle of every difficulty lies opportunity.",a:"Albert Einstein"}];
 const VOCAB=[{w:"Epistemology",t:"noun",d:"The branch of philosophy concerned with the theory of knowledge.",e:"Epistemology asks: how do we know what we know?"},{w:"Algorithm",t:"noun",d:"A step-by-step procedure for solving a problem or accomplishing a task.",e:"Search engines use algorithms to rank websites."},{w:"Entropy",t:"noun",d:"A measure of disorder or randomness in a system.",e:"Entropy always increases in an isolated system — the Second Law of Thermodynamics."},{w:"Paradigm",t:"noun",d:"A typical example or pattern of something; a framework for understanding.",e:"Einstein's relativity created a paradigm shift in physics."},{w:"Synthesis",t:"noun",d:"The combination of ideas to form a theory or system.",e:"The synthesis of knowledge from multiple subjects leads to innovation."}];
-
 const loadDaily=()=>{const d=new Date().getDate();const f=FACTS[d%FACTS.length];$('dft').textContent=f;const q=QUOTES[d%QUOTES.length];$('qt').textContent='"'+q.q+'"';$('qa').textContent='— '+q.a;const v=VOCAB[d%VOCAB.length];$('vw').textContent=v.w;$('vtype').textContent=v.t;$('vdef').textContent=v.d;$('vex').textContent='"'+v.e+'"';};
 
 // ═══════════════════════════════════════════════
 //  MOOD CHART
 // ═══════════════════════════════════════════════
-const renderMoodChart=()=>{$('mch').innerHTML=moodHist.slice(-10).map(m=>'<span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:'+m.c+';margin:2px;opacity:.8" title="'+m.m+'"></span>').join('');};
+const renderMoodChart=()=>{if($('mch'))$('mch').innerHTML=moodHist.slice(-10).map(m=>'<span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:'+m.c+';margin:2px;opacity:.8" title="'+m.m+'"></span>').join('');};
 
 // ═══════════════════════════════════════════════
 //  EXPORT
@@ -518,7 +530,7 @@ window.resetAll=()=>{if(confirm('Reset ALL NOVA data?')){localStorage.clear();lo
 // ═══════════════════════════════════════════════
 //  STREAK
 // ═══════════════════════════════════════════════
-const updateStreak=()=>{const s=getStreak();$('str-d').textContent=s;$('hstr').textContent=s+'🔥';if(s>=3)unlock('str3','3-Day Streak!');};
+const updateStreak=()=>{const s=getStreak();if($('str-d'))$('str-d').textContent=s;if($('hstr'))$('hstr').textContent=s+'🔥';if(s>=3)unlock('str3','3-Day Streak!');};
 
 // ═══════════════════════════════════════════════
 //  BOOT
@@ -526,7 +538,6 @@ const updateStreak=()=>{const s=getStreak();$('str-d').textContent=s;$('hstr').t
 const BOOTM=['LOADING NOVA v4.0...','INITIALIZING 300+ KNOWLEDGE ARTICLES...','VOICE ENGINE READY...','EMOTION MATRIX CALIBRATED...','AI API CONNECTED...','PRAYER TIMES KARACHI LOADED...','REQUESTING MIC PERMISSION — ONCE ONLY...','WAKE WORD SYSTEM ARMED...','ALL SYSTEMS NOMINAL.','WELCOME TO NOVA!'];
 const runBoot=()=>{let i=0;const step=()=>{if(i>=BOOTM.length){setTimeout(()=>{$('boot').style.transition='opacity .5s';$('boot').style.opacity='0';setTimeout(()=>$('boot').style.display='none',500);},500);return;}$('boot-log').textContent=BOOTM[i];$('boot-fill').style.width=((i+1)/BOOTM.length*100)+'%';i++;setTimeout(step,220);};step();};
 
-// QUICK INPUT
 window.fi=t=>{if(speaking){synth.cancel();doneSpeaking();}addMsg('user',t,false);processInput(t);};
 window.sTab=sTab;
 window.startG=startG;
@@ -545,8 +556,7 @@ const init=async()=>{
   const mic=await getMic();
   if(mic)notify('Microphone ready!','ok',3000);
   setTimeout(()=>{
-    const apiStatus = (NOVA_API_KEY && NOVA_API_KEY !== "sk-hc-v1-26e85c741c8c482cb61738d7232d87f5e3b2f92c1aF8489085cb d1a63alae016") ? "AI API connected for intelligent responses." : "Running in offline mode — add API key in config.js for AI responses.";
-    addMsg('nova','Hello! NOVA v4 is fully online with over 300 knowledge articles covering science, Islam, Pakistan, history, math, technology, space, and health — all offline. '+apiStatus+' Press Start Wake Word then just say Hi Nova anytime to activate me hands-free!');
+    addMsg('nova','Hello! NOVA v4 is fully online with over 300 knowledge articles covering science, Islam, Pakistan, history, math, technology, space, and health — all offline. Running in offline mode — add API key in config.js for AI responses. Press Start Wake Word then just say Hi Nova anytime to activate me hands-free!');
     setMood('warm');
   },2900);
 };
@@ -557,50 +567,27 @@ document.addEventListener('DOMContentLoaded',init);
 // ═══════════════════════════════════════════════
 //  STUDENT TOOLS
 // ═══════════════════════════════════════════════
-
-// GRADE CALCULATOR
 let subjects = [];
 window.addSubject = () => {
     const name = $('subj-name').value.trim();
     const marks = parseFloat($('subj-marks').value);
     const total = parseFloat($('subj-total').value);
-    if (!name || isNaN(marks) || isNaN(total)) {
-        notify('Please fill all fields!', 'err');
-        return;
-    }
-    if (marks > total) {
-        notify('Marks cannot exceed total!', 'err');
-        return;
-    }
+    if (!name || isNaN(marks) || isNaN(total)) { notify('Please fill all fields!', 'err'); return; }
+    if (marks > total) { notify('Marks cannot exceed total!', 'err'); return; }
     subjects.push({ name, marks, total });
     renderSubjects();
-    $('subj-name').value = '';
-    $('subj-marks').value = '';
-    $('subj-total').value = '';
+    $('subj-name').value = '';$('subj-marks').value = '';$('subj-total').value = '';
     notify('Subject added!', 'ok');
 };
-
 const renderSubjects = () => {
     $('grade-subjects').innerHTML = subjects.map((s, i) => {
         const pct = ((s.marks / s.total) * 100).toFixed(1);
-        return `<div class="lr">
-            <span class="lk">${s.name}</span>
-            <span class="lv">${s.marks}/${s.total} — ${pct}%</span>
-            <button class="btn br" style="padding:3px 8px;font-size:8px" onclick="removeSubject(${i})">✕</button>
-        </div>`;
+        return `<div class="lr"><span class="lk">${s.name}</span><span class="lv">${s.marks}/${s.total} — ${pct}%</span><button class="btn br" style="padding:3px 8px;font-size:8px" onclick="removeSubject(${i})">✕</button></div>`;
     }).join('');
 };
-
-window.removeSubject = i => {
-    subjects.splice(i, 1);
-    renderSubjects();
-};
-
+window.removeSubject = i => { subjects.splice(i, 1); renderSubjects(); };
 window.calcGrades = () => {
-    if (!subjects.length) {
-        notify('Add subjects first!', 'err');
-        return;
-    }
+    if (!subjects.length) { notify('Add subjects first!', 'err'); return; }
     const total = subjects.reduce((a, s) => a + (s.marks / s.total) * 100, 0);
     const avg = (total / subjects.length).toFixed(1);
     const grade = avg >= 90 ? 'A+' : avg >= 80 ? 'A' : avg >= 70 ? 'B' : avg >= 60 ? 'C' : avg >= 50 ? 'D' : 'F';
@@ -609,170 +596,85 @@ window.calcGrades = () => {
     speak(`Your overall percentage is ${avg} percent. Grade ${grade}. ${msg}`);
     addXP(10);
 };
-
 window.clearGrades = () => { subjects = []; renderSubjects(); $('grade-result').innerHTML = ''; };
 
-// ═══════════════════════════════════════════════
-//  POMODORO TIMER
-// ═══════════════════════════════════════════════
+// POMODORO
 let pomTimer = null, pomSeconds = 25 * 60, pomIsStudy = true, pomSessions = 0, pomRunning = false;
-
 const pomUpdate = () => {
     const m = Math.floor(pomSeconds / 60);
     const s = pomSeconds % 60;
     $('pom-display').textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
     $('pom-display').style.color = pomIsStudy ? 'var(--c)' : 'var(--cg)';
 };
-
 window.pomStart = () => {
     if (pomRunning) return;
     pomRunning = true;
-    notify(pomIsStudy ? 'Study session started! Focus!' : 'Break time! Relax!', 'ok');
+    notify(pomIsStudy ? 'Study session started!' : 'Break time!', 'ok');
     pomTimer = setInterval(() => {
-        pomSeconds--;
-        pomUpdate();
+        pomSeconds--;pomUpdate();
         if (pomSeconds <= 0) {
-            clearInterval(pomTimer);
-            pomRunning = false;
-            beep(880, 0.1);
-            beep(660, 0.1);
+            clearInterval(pomTimer);pomRunning = false;beep(880, 0.1);
             if (pomIsStudy) {
-                pomSessions++;
-                $('pom-count').textContent = '🍅 Sessions completed: ' + pomSessions;
-                pomSeconds = 5 * 60;
-                pomIsStudy = false;
-                $('pom-status').textContent = 'BREAK TIME';
-                speak('Study session complete! Take a 5 minute break. Well done!');
-                addXP(20);
-                notify('🍅 Session complete! Take a break!', 'ok', 5000);
+                pomSessions++;$('pom-count').textContent = '🍅 Sessions: ' + pomSessions;
+                pomSeconds = 5 * 60;pomIsStudy = false;$('pom-status').textContent = 'BREAK TIME';
+                speak('Study session complete! Take a 5 minute break!');addXP(20);
             } else {
-                pomSeconds = 25 * 60;
-                pomIsStudy = true;
-                $('pom-status').textContent = 'STUDY SESSION';
-                speak('Break over! Time to focus for 25 minutes!');
-                notify('Break over! Back to studying!', 'ok', 5000);
+                pomSeconds = 25 * 60;pomIsStudy = true;$('pom-status').textContent = 'STUDY SESSION';
+                speak('Break over! Time to focus!');
             }
             pomUpdate();
         }
     }, 1000);
 };
+window.pomPause = () => { if (!pomRunning) return; clearInterval(pomTimer); pomRunning = false; notify('Timer paused!', 'warn'); };
+window.pomReset = () => { clearInterval(pomTimer); pomRunning = false; pomSeconds = 25 * 60; pomIsStudy = true; $('pom-status').textContent = 'STUDY SESSION'; pomUpdate(); notify('Timer reset!', 'warn'); };
 
-window.pomPause = () => {
-    if (!pomRunning) return;
-    clearInterval(pomTimer);
-    pomRunning = false;
-    notify('Timer paused!', 'warn');
-};
-
-window.pomReset = () => {
-    clearInterval(pomTimer);
-    pomRunning = false;
-    pomSeconds = 25 * 60;
-    pomIsStudy = true;
-    $('pom-status').textContent = 'STUDY SESSION';
-    pomUpdate();
-    notify('Timer reset!', 'warn');
-};
-
-// ═══════════════════════════════════════════════
-//  EXAM COUNTDOWN
-// ═══════════════════════════════════════════════
+// EXAM COUNTDOWN
 let exams = JSON.parse(localStorage.getItem('nova_exams') || '[]');
-
 window.addExam = () => {
     const name = $('exam-name').value.trim();
     const date = $('exam-date').value;
-    if (!name || !date) {
-        notify('Please enter exam name and date!', 'err');
-        return;
-    }
+    if (!name || !date) { notify('Please enter exam name and date!', 'err'); return; }
     exams.push({ name, date });
     localStorage.setItem('nova_exams', JSON.stringify(exams));
-    $('exam-name').value = '';
-    $('exam-date').value = '';
-    renderExams();
-    notify('Exam added!', 'ok');
+    $('exam-name').value = '';$('exam-date').value = '';
+    renderExams();notify('Exam added!', 'ok');
 };
-
 const renderExams = () => {
-    if (!exams.length) {
-        $('exam-list').innerHTML = '<div style="color:var(--t3);font-size:11px;padding:8px">No exams added yet!</div>';
-        return;
-    }
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    if (!exams.length) { $('exam-list').innerHTML = '<div style="color:var(--t3);font-size:11px;padding:8px">No exams added yet!</div>'; return; }
+    const today = new Date();today.setHours(0, 0, 0, 0);
     exams.sort((a, b) => new Date(a.date) - new Date(b.date));
     $('exam-list').innerHTML = exams.map((e, i) => {
-        const examDate = new Date(e.date);
-        examDate.setHours(0, 0, 0, 0);
+        const examDate = new Date(e.date);examDate.setHours(0, 0, 0, 0);
         const days = Math.ceil((examDate - today) / (1000 * 60 * 60 * 24));
         const color = days <= 3 ? 'var(--cr,#ef4444)' : days <= 7 ? 'var(--cy)' : 'var(--cg)';
         const msg = days < 0 ? 'PASSED' : days === 0 ? 'TODAY!' : days === 1 ? 'TOMORROW!' : days + ' days left';
-        return `<div class="lr">
-            <span class="lk">📝 ${e.name}</span>
-            <span style="color:${color};font-family:var(--fh);font-size:11px">${msg}</span>
-            <span class="lv">${e.date}</span>
-            <button class="btn br" style="padding:3px 8px;font-size:8px" onclick="removeExam(${i})">✕</button>
-        </div>`;
+        return `<div class="lr"><span class="lk">📝 ${e.name}</span><span style="color:${color};font-family:var(--fh);font-size:11px">${msg}</span><span class="lv">${e.date}</span><button class="btn br" style="padding:3px 8px;font-size:8px" onclick="removeExam(${i})">✕</button></div>`;
     }).join('');
 };
-
-window.removeExam = i => {
-    exams.splice(i, 1);
-    localStorage.setItem('nova_exams', JSON.stringify(exams));
-    renderExams();
-};
-
+window.removeExam = i => { exams.splice(i, 1); localStorage.setItem('nova_exams', JSON.stringify(exams)); renderExams(); };
 renderExams();
 
-// ═══════════════════════════════════════════════
-//  UNIT CONVERTER
-// ═══════════════════════════════════════════════
+// UNIT CONVERTER
 const UNITS = {
-    length: {
-        units: ['Kilometers', 'Meters', 'Centimeters', 'Miles', 'Feet', 'Inches', 'Yards'],
-        base: 'Meters',
-        toBase: { Kilometers: 1000, Meters: 1, Centimeters: 0.01, Miles: 1609.34, Feet: 0.3048, Inches: 0.0254, Yards: 0.9144 }
-    },
-    weight: {
-        units: ['Kilograms', 'Grams', 'Pounds', 'Ounces', 'Tonnes'],
-        base: 'Kilograms',
-        toBase: { Kilograms: 1, Grams: 0.001, Pounds: 0.453592, Ounces: 0.0283495, Tonnes: 1000 }
-    },
-    temp: {
-        units: ['Celsius', 'Fahrenheit', 'Kelvin'],
-        base: 'Celsius',
-        toBase: null
-    },
-    speed: {
-        units: ['km/h', 'm/s', 'mph', 'Knots'],
-        base: 'm/s',
-        toBase: { 'km/h': 0.277778, 'm/s': 1, 'mph': 0.44704, 'Knots': 0.514444 }
-    },
-    area: {
-        units: ['Square Meters', 'Square Kilometers', 'Square Feet', 'Acres', 'Hectares'],
-        base: 'Square Meters',
-        toBase: { 'Square Meters': 1, 'Square Kilometers': 1e6, 'Square Feet': 0.092903, 'Acres': 4046.86, 'Hectares': 10000 }
-    }
+    length: { units: ['Kilometers', 'Meters', 'Centimeters', 'Miles', 'Feet', 'Inches', 'Yards'], toBase: { Kilometers: 1000, Meters: 1, Centimeters: 0.01, Miles: 1609.34, Feet: 0.3048, Inches: 0.0254, Yards: 0.9144 } },
+    weight: { units: ['Kilograms', 'Grams', 'Pounds', 'Ounces', 'Tonnes'], toBase: { Kilograms: 1, Grams: 0.001, Pounds: 0.453592, Ounces: 0.0283495, Tonnes: 1000 } },
+    temp: { units: ['Celsius', 'Fahrenheit', 'Kelvin'], toBase: null },
+    speed: { units: ['km/h', 'm/s', 'mph', 'Knots'], toBase: { 'km/h': 0.277778, 'm/s': 1, 'mph': 0.44704, 'Knots': 0.514444 } },
+    area: { units: ['Square Meters', 'Square Kilometers', 'Square Feet', 'Acres', 'Hectares'], toBase: { 'Square Meters': 1, 'Square Kilometers': 1e6, 'Square Feet': 0.092903, 'Acres': 4046.86, 'Hectares': 10000 } }
 };
-
 window.updateConverter = () => {
     const type = $('conv-type').value;
     const u = UNITS[type].units;
-    [$('conv-from'), $('conv-to')].forEach((sel, i) => {
-        sel.innerHTML = u.map(u => `<option>${u}</option>`).join('');
-        sel.value = u[i === 0 ? 0 : 1];
-    });
+    [$('conv-from'), $('conv-to')].forEach((sel, i) => { sel.innerHTML = u.map(u => `<option>${u}</option>`).join(''); sel.value = u[i === 0 ? 0 : 1]; });
     $('conv-result').textContent = '';
 };
-
 window.convert = () => {
     const type = $('conv-type').value;
     const val = parseFloat($('conv-input').value);
     const from = $('conv-from').value;
     const to = $('conv-to').value;
     if (isNaN(val)) { $('conv-result').textContent = ''; return; }
-
     let result;
     if (type === 'temp') {
         if (from === 'Celsius' && to === 'Fahrenheit') result = val * 9/5 + 32;
@@ -782,87 +684,136 @@ window.convert = () => {
         else if (from === 'Fahrenheit' && to === 'Kelvin') result = (val - 32) * 5/9 + 273.15;
         else if (from === 'Kelvin' && to === 'Fahrenheit') result = (val - 273.15) * 9/5 + 32;
         else result = val;
-    } else {
-        const u = UNITS[type];
-        result = (val * u.toBase[from]) / u.toBase[to];
-    }
-
+    } else { const u = UNITS[type]; result = (val * u.toBase[from]) / u.toBase[to]; }
     $('conv-result').textContent = `${val} ${from} = ${result.toFixed(4)} ${to}`;
 };
-
 updateConverter();
 
-// ═══════════════════════════════════════════════
-//  SPACE SCREENSAVER
-// ═══════════════════════════════════════════════
+// SPACE SCREENSAVER
 let idleTimer = null, screensaverOn = false;
-
-const resetIdle = () => {
-    clearTimeout(idleTimer);
-    if (screensaverOn) stopScreensaver();
-    idleTimer = setTimeout(startScreensaver, 3 * 60 * 1000);
-};
-
-const startScreensaver = () => {
-    screensaverOn = true;
-    document.body.style.background = '#000010';
-    notify('💤 Nova is idle — space screensaver active', 'ok', 3000);
-};
-
-const stopScreensaver = () => {
-    screensaverOn = false;
-    document.body.style.background = '';
-};
-
+const resetIdle = () => { clearTimeout(idleTimer); if (screensaverOn) stopScreensaver(); idleTimer = setTimeout(startScreensaver, 3 * 60 * 1000); };
+const startScreensaver = () => { screensaverOn = true; document.body.style.background = '#000010'; notify('💤 Nova is idle', 'ok', 3000); };
+const stopScreensaver = () => { screensaverOn = false; document.body.style.background = ''; };
 document.addEventListener('mousemove', resetIdle);
 document.addEventListener('keypress', resetIdle);
 document.addEventListener('click', resetIdle);
 resetIdle();
-// ═══════════════════════════════════════════════
-//  THEME CREATOR
-// ═══════════════════════════════════════════════
+
+// THEME CREATOR
 window.applyTheme = () => {
-    const primary = $('theme-primary').value;
-    const accent = $('theme-accent').value;
-    const success = $('theme-success').value;
-    document.documentElement.style.setProperty('--c', primary);
-    document.documentElement.style.setProperty('--cp', accent);
-    document.documentElement.style.setProperty('--cg', success);
-    document.documentElement.style.setProperty('--c-glow', primary + '40');
+    document.documentElement.style.setProperty('--c', $('theme-primary').value);
+    document.documentElement.style.setProperty('--cp', $('theme-accent').value);
+    document.documentElement.style.setProperty('--cg', $('theme-success').value);
 };
-
 window.saveTheme = () => {
-    const theme = {
-        primary: $('theme-primary').value,
-        accent: $('theme-accent').value,
-        success: $('theme-success').value
-    };
-    localStorage.setItem('nova_theme', JSON.stringify(theme));
-    notify('Theme saved! 🌈', 'ok');
-    beep(880, 0.05);
+    localStorage.setItem('nova_theme', JSON.stringify({ primary: $('theme-primary').value, accent: $('theme-accent').value, success: $('theme-success').value }));
+    notify('Theme saved! 🌈', 'ok');beep(880, 0.05);
 };
-
 window.resetTheme = () => {
     document.documentElement.style.setProperty('--c', '#00d4ff');
     document.documentElement.style.setProperty('--cp', '#7c3aed');
     document.documentElement.style.setProperty('--cg', '#10b981');
-    $('theme-primary').value = '#00d4ff';
-    $('theme-accent').value = '#7c3aed';
-    $('theme-success').value = '#10b981';
-    localStorage.removeItem('nova_theme');
-    notify('Theme reset to default!', 'warn');
+    $('theme-primary').value = '#00d4ff';$('theme-accent').value = '#7c3aed';$('theme-success').value = '#10b981';
+    localStorage.removeItem('nova_theme');notify('Theme reset!', 'warn');
 };
-
 const loadTheme = () => {
     const saved = localStorage.getItem('nova_theme');
     if (!saved) return;
     const theme = JSON.parse(saved);
-    $('theme-primary').value = theme.primary;
-    $('theme-accent').value = theme.accent;
-    $('theme-success').value = theme.success;
+    $('theme-primary').value = theme.primary;$('theme-accent').value = theme.accent;$('theme-success').value = theme.success;
     document.documentElement.style.setProperty('--c', theme.primary);
     document.documentElement.style.setProperty('--cp', theme.accent);
     document.documentElement.style.setProperty('--cg', theme.success);
 };
-
 loadTheme();
+
+// SCIENTIFIC CALCULATOR
+let calcExpr = '';
+window.calcInput = (val) => { calcExpr += val; $('calc-expr').textContent = calcExpr; };
+window.calcFn = (fn) => {
+    switch(fn) {
+        case 'clear': calcExpr = ''; $('calc-expr').textContent = ''; $('calc-result').textContent = '0'; break;
+        case 'back': calcExpr = calcExpr.slice(0, -1); $('calc-expr').textContent = calcExpr; break;
+        case 'sign': if (calcExpr) calcExpr = String(-parseFloat(calcExpr)); $('calc-expr').textContent = calcExpr; break;
+        case 'percent': if (calcExpr) calcExpr = String(parseFloat(calcExpr) / 100); $('calc-expr').textContent = calcExpr; break;
+        case 'dot': if (!calcExpr.includes('.')) calcExpr += '.'; $('calc-expr').textContent = calcExpr; break;
+        case 'pi': calcExpr += Math.PI; $('calc-expr').textContent = calcExpr; break;
+        case 'e': calcExpr += Math.E; $('calc-expr').textContent = calcExpr; break;
+        case 'sin': try { const v=parseFloat(calcExpr); calcExpr=String(Math.sin(v*Math.PI/180).toFixed(8)); $('calc-expr').textContent='sin('+v+')'; $('calc-result').textContent=calcExpr; } catch(e) {} break;
+        case 'cos': try { const v=parseFloat(calcExpr); calcExpr=String(Math.cos(v*Math.PI/180).toFixed(8)); $('calc-expr').textContent='cos('+v+')'; $('calc-result').textContent=calcExpr; } catch(e) {} break;
+        case 'tan': try { const v=parseFloat(calcExpr); calcExpr=String(Math.tan(v*Math.PI/180).toFixed(8)); $('calc-expr').textContent='tan('+v+')'; $('calc-result').textContent=calcExpr; } catch(e) {} break;
+        case 'log': try { const v=parseFloat(calcExpr); calcExpr=String(Math.log10(v).toFixed(8)); $('calc-expr').textContent='log('+v+')'; $('calc-result').textContent=calcExpr; } catch(e) {} break;
+        case 'sqrt': try { const v=parseFloat(calcExpr); calcExpr=String(Math.sqrt(v).toFixed(8)); $('calc-expr').textContent='√('+v+')'; $('calc-result').textContent=calcExpr; } catch(e) {} break;
+        case 'sq': try { const v=parseFloat(calcExpr); calcExpr=String(Math.pow(v,2)); $('calc-expr').textContent=v+'²'; $('calc-result').textContent=calcExpr; } catch(e) {} break;
+        case 'pow': calcExpr += '**'; $('calc-expr').textContent = calcExpr; break;
+        case 'abs': try { const v=parseFloat(calcExpr); calcExpr=String(Math.abs(v)); $('calc-expr').textContent='|'+v+'|'; $('calc-result').textContent=calcExpr; } catch(e) {} break;
+        case 'equals':
+            try { const result=Function('"use strict"; return ('+calcExpr+')')(); $('calc-expr').textContent=calcExpr+' ='; $('calc-result').textContent=parseFloat(result.toFixed(10)); calcExpr=String(result); }
+            catch(e) { $('calc-result').textContent='ERROR'; calcExpr=''; }
+            break;
+    }
+};
+
+// ═══════════════════════════════════════════════
+//  STATS DASHBOARD
+// ═══════════════════════════════════════════════
+const updateStats = () => {
+    $('st-msgs').textContent = msgs;$('st-qs').textContent = qs;$('st-quiz').textContent = qScore;
+    $('st-xp').textContent = xp;$('st-notes').textContent = notes.length;
+    $('st-goals').textContent = goals.filter(g => g.done).length;
+    $('st-streak').textContent = getStreak() + '🔥';$('st-level').textContent = level;
+    const topicColors = { physics:'#00d4ff',biology:'#10b981',chemistry:'#f59e0b',math:'#7c3aed',space:'#a78bfa',tech:'#60a5fa',islam:'#34d399',pakistan:'#fbbf24',history:'#f87171',health:'#fb923c',geo:'#4ade80' };
+    const topicsArr = [...topicsSet];
+    $('topics-chart').innerHTML = topicsArr.length ?
+        topicsArr.map(t => `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(0,212,255,0.04)"><div style="width:8px;height:8px;border-radius:50%;background:${topicColors[t]||'var(--c)'}"></div><span style="font-family:var(--fb);font-size:12px;color:var(--t2);flex:1">${t.toUpperCase()}</span><span style="font-family:var(--fh);font-size:10px;color:${topicColors[t]||'var(--c)'}">EXPLORED ✓</span></div>`).join('')
+        : '<div style="color:var(--t3);font-size:11px">No topics explored yet!</div>';
+    const accuracy = qScore > 0 ? Math.round((qCorrect / (qCorrect + Math.max(0, qScore/10 - qCorrect))) * 100) : 0;
+    $('quiz-chart').innerHTML = `<div style="display:flex;gap:16px;flex-wrap:wrap"><div style="text-align:center;flex:1;padding:12px;background:var(--cd);border:1px solid var(--b);border-radius:8px"><div style="font-family:var(--fh);font-size:24px;color:var(--cg)">${qCorrect}</div><div style="font-family:var(--fm);font-size:8px;color:var(--t3);letter-spacing:2px">CORRECT</div></div><div style="text-align:center;flex:1;padding:12px;background:var(--cd);border:1px solid var(--b);border-radius:8px"><div style="font-family:var(--fh);font-size:24px;color:var(--cy)">${qScore}</div><div style="font-family:var(--fm);font-size:8px;color:var(--t3);letter-spacing:2px">SCORE</div></div><div style="text-align:center;flex:1;padding:12px;background:var(--cd);border:1px solid var(--b);border-radius:8px"><div style="font-family:var(--fh);font-size:24px;color:var(--cp)">${qStreak}🔥</div><div style="font-family:var(--fm);font-size:8px;color:var(--t3);letter-spacing:2px">STREAK</div></div></div><div style="margin-top:10px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-family:var(--fm);font-size:9px;color:var(--t3)">ACCURACY</span><span style="font-family:var(--fh);font-size:9px;color:var(--cg)">${accuracy}%</span></div><div style="height:6px;background:rgba(255,255,255,0.04);border-radius:3px;overflow:hidden"><div style="height:100%;width:${accuracy}%;background:linear-gradient(90deg,var(--cg),var(--c));transition:width 1s ease"></div></div></div>`;
+    $('mood-chart-big').innerHTML = moodHist.length ?
+        `<div style="display:flex;align-items:flex-end;gap:4px;height:60px;padding:8px 0">${moodHist.slice(-20).map(m=>`<div style="flex:1;border-radius:2px 2px 0 0;background:${m.c};opacity:0.7;min-height:8px;height:${30+Math.random()*30}px" title="${m.m}"></div>`).join('')}</div><div style="font-family:var(--fm);font-size:8px;color:var(--t3);letter-spacing:1px;margin-top:4px">MOOD OVER TIME</div>`
+        : '<div style="color:var(--t3);font-size:11px">No mood data yet!</div>';
+    const items = [{k:'water',l:'💧 Water',v:trackers.water,max:8,c:'var(--c)'},{k:'exercise',l:'🏃 Exercise',v:trackers.exercise,max:60,c:'var(--cg)'},{k:'reading',l:'📖 Reading',v:trackers.reading,max:60,c:'var(--cy)'},{k:'sleep',l:'😴 Sleep',v:trackers.sleep,max:9,c:'var(--cp)'}];
+    $('wellness-chart').innerHTML = items.map(i=>`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-family:var(--fb);font-size:12px;color:var(--t2)">${i.l}</span><span style="font-family:var(--fh);font-size:10px;color:${i.c}">${i.v}/${i.max}</span></div><div style="height:6px;background:rgba(255,255,255,0.04);border-radius:3px;overflow:hidden"><div style="height:100%;width:${Math.min(100,(i.v/i.max)*100)}%;background:${i.c};transition:width 1s ease"></div></div></div>`).join('');
+};
+const origSTab = window.sTab;
+window.sTab = (tab) => { origSTab(tab); if(tab === 'stats') updateStats(); };
+
+// ═══════════════════════════════════════════════
+//  SMART SEARCH
+// ═══════════════════════════════════════════════
+let activeFilters = new Set(['notes', 'chat', 'knowledge']);
+window.togFilter = (f) => {
+    if(activeFilters.has(f)) activeFilters.delete(f); else activeFilters.add(f);
+    document.querySelectorAll('.sf').forEach(el => { const filter = el.getAttribute('onclick').match(/'(\w+)'/)[1]; el.classList.toggle('on', activeFilters.has(filter)); });
+    smartSearch($('search-inp').value);
+};
+window.smartSearch = (query) => {
+    if(!query || query.length < 2) { $('search-results').innerHTML = '<div style="color:var(--t3);font-size:11px;padding:8px">Type to search across all Nova content...</div>'; return; }
+    const q = query.toLowerCase();
+    const results = [];
+    if(activeFilters.has('notes')) { notes.forEach(n => { if(n.t.toLowerCase().includes(q)) results.push({icon:'📝',title:'Note',content:n.t,meta:n.d,color:'var(--cy)'}); }); }
+    if(activeFilters.has('chat')) { [...($('chat-log')||{}).querySelectorAll('.mbody')||[]].forEach(m => { if(m.textContent.toLowerCase().includes(q)) results.push({icon:'💬',title:'Chat',content:m.textContent,meta:'Chat history',color:'var(--cp)'}); }); }
+    if(activeFilters.has('knowledge')) { KB.forEach(entry => { if(entry.p && entry.p.toString().toLowerCase().includes(q) && typeof entry.r === 'string') results.push({icon:'📚',title:'Knowledge',content:entry.r.substring(0,120)+'...',meta:'Knowledge base',color:'var(--cg)'}); }); }
+    if(!results.length) { $('search-results').innerHTML = `<div style="color:var(--t3);font-size:11px;padding:8px">No results for "${query}"</div>`; return; }
+    $('search-results').innerHTML = `<div style="font-family:var(--fm);font-size:9px;color:var(--t3);letter-spacing:2px;margin-bottom:8px">${results.length} RESULTS</div>${results.map(r=>`<div class="search-result"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="font-size:14px">${r.icon}</span><span style="font-family:var(--fh);font-size:9px;color:${r.color};letter-spacing:2px">${r.title}</span><span style="font-family:var(--fm);font-size:8px;color:var(--t3);margin-left:auto">${r.meta}</span></div><div style="font-size:12px;color:var(--t2);line-height:1.6;font-family:var(--fb)">${r.content.replace(new RegExp(query,'gi'),m=>'<mark style="background:rgba(0,212,255,0.2);color:var(--c);padding:0 2px">'+m+'</mark>')}</div></div>`).join('')}`;
+};
+
+// ═══════════════════════════════════════════════
+//  NOVA'S MEMORY SYSTEM
+// ═══════════════════════════════════════════════
+let memories = JSON.parse(localStorage.getItem('nova_memories') || '[]');
+const renderMemories = () => {
+    if (!memories.length) { $('memory-list').innerHTML = '<div style="color:var(--t3);font-size:11px;padding:8px 0">No memories yet!</div>'; return; }
+    $('memory-list').innerHTML = memories.map((m, i) => `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(0,212,255,0.04)"><span style="font-size:12px">🧠</span><span style="flex:1;font-size:11px;color:var(--t2);font-family:var(--fb)">${m.text}</span><span style="font-family:var(--fm);font-size:8px;color:var(--t3)">${m.date}</span><button onclick="deleteMemory(${i})" style="background:none;border:none;color:var(--cr);cursor:pointer;font-size:12px">✕</button></div>`).join('');
+};
+window.addMemory = () => {
+    const inp = $('memory-inp');
+    const text = inp.value.trim();
+    if (!text) return;
+    memories.push({ text, date: new Date().toLocaleDateString() });
+    localStorage.setItem('nova_memories', JSON.stringify(memories));
+    inp.value = '';renderMemories();notify('Memory saved! 🧠', 'ok');beep(660, 0.05);addXP(5);
+};
+window.deleteMemory = (i) => { memories.splice(i, 1); localStorage.setItem('nova_memories', JSON.stringify(memories)); renderMemories(); notify('Memory deleted', 'warn'); };
+window.clearMemory = () => { if (confirm('Clear all memories?')) { memories = []; localStorage.removeItem('nova_memories'); renderMemories(); notify('All memories cleared', 'warn'); } };
+renderMemories();
