@@ -1,3 +1,4 @@
+import os
 from flask import Flask, send_from_directory, request, jsonify
 from flask_cors import CORS
 import urllib.request
@@ -32,7 +33,6 @@ def chat():
             "max_tokens": 400
         }).encode('utf-8')
 
-        # Create SSL context that doesn't verify certificates
         ctx = ssl.create_default_context()
         ctx.check_hostname = False
         ctx.verify_mode = ssl.CERT_NONE
@@ -67,6 +67,6 @@ def chat():
 if __name__ == '__main__':
     print("=" * 40)
     print("NOVA AI Student Assistant v4.0")
-    print("Running at http://localhost:5000")
     print("=" * 40)
-    app.run(debug=True, port=5000, host='0.0.0.0')
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=False, port=port, host='0.0.0.0')
